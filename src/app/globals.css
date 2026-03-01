@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #09090b;
-  --color-foreground: #f4f4f5;
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
   --color-accent: #3b82f6;
   --color-accent-light: #60a5fa;
   --color-accent-dark: #2563eb;
-  --color-muted: #a1a1aa;
-  --color-muted-dark: #71717a;
-  --color-surface: #18181b;
-  --color-surface-light: #27272a;
-  --color-surface-lighter: #3f3f46;
-  --color-border: #27272a;
-  --color-border-light: #3f3f46;
+  --color-muted: var(--muted);
+  --color-muted-dark: var(--muted-dark);
+  --color-surface: var(--surface);
+  --color-surface-light: var(--surface-light);
+  --color-surface-lighter: var(--surface-lighter);
+  --color-border: var(--border-c);
+  --color-border-light: var(--border-light-c);
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
@@ -20,6 +20,34 @@
 
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* Dark theme (default) */
+:root {
+  --bg: #09090b;
+  --fg: #f4f4f5;
+  --muted: #a1a1aa;
+  --muted-dark: #71717a;
+  --surface: #18181b;
+  --surface-light: #27272a;
+  --surface-lighter: #3f3f46;
+  --border-c: #27272a;
+  --border-light-c: #3f3f46;
+  color-scheme: dark;
+}
+
+/* Light theme */
+[data-theme='light'] {
+  --bg: #fafafa;
+  --fg: #18181b;
+  --muted: #71717a;
+  --muted-dark: #a1a1aa;
+  --surface: #f4f4f5;
+  --surface-light: #e4e4e7;
+  --surface-lighter: #d4d4d8;
+  --border-c: #e4e4e7;
+  --border-light-c: #d4d4d8;
+  color-scheme: light;
 }
 
 @layer base {
@@ -31,7 +59,6 @@
 
   html {
     scroll-behavior: smooth;
-    color-scheme: dark;
   }
 
   body {
@@ -41,6 +68,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.7;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   ::selection {
