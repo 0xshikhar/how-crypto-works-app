@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Check, ChevronRight } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock, ArrowUp } from 'lucide-react'
 import { MDXRemote } from 'next-mdx-remote'
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import { useBookStore } from '@/lib/store'
 import { mdxComponents } from '@/lib/mdx-components'
+import { HighlightPopover } from '@/components/book/HighlightPopover'
 import type { Chapter, Section } from '@/lib/content-loader'
 
 interface SectionViewProps {
@@ -49,6 +50,8 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
   const { markCompleted, isCompleted, updateProgress } = useBookStore()
   const isComplete = isCompleted(chapter.slug, section.slug)
 
+  const [showBackToTop, setShowBackToTop] = useState(false)
+
   // Track scroll progress on window scroll
   useEffect(() => {
     const handleScroll = () => {
@@ -58,6 +61,7 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
         const pct = Math.min(100, (scrollTop / docHeight) * 100)
         updateProgress(chapter.slug, section.slug, pct)
       }
+      setShowBackToTop(scrollTop > 300)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
@@ -98,9 +102,13 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
           </div>
 
           {/* Section title */}
-          <h1 className="text-3xl md:text-4xl font-extrabold mb-8 leading-tight tracking-tight bg-gradient-to-r from-foreground to-muted bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-extrabold mb-3 leading-tight tracking-tight bg-gradient-to-r from-foreground to-muted bg-clip-text text-transparent">
             {section.title}
           </h1>
+          <div className="flex items-center gap-1.5 text-xs text-muted-dark mb-8">
+            <Clock className="w-3 h-3" />
+            <span>{section.readingTime} min read</span>
+          </div>
 
           {/* Content */}
           <div className="prose prose-invert max-w-none">
@@ -151,6 +159,22 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
           </div>
         </motion.article>
       </div>
+
+      {/* Back to top */}
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-6 right-6 z-30 p-3 rounded-full bg-accent text-white shadow-lg shadow-accent/25 hover:bg-accent-dark transition-colors"
+            aria-label="Back to top"
+          >
+            <ArrowUp className="w-4 h-4" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* Right TOC sidebar */}
       {section.headings.length > 0 && (
