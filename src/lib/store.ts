@@ -6,6 +6,19 @@ interface ReadingProgress {
     [key: string]: number // "chapterSlug/sectionSlug" -> scroll percentage
 }
 
+type Theme = 'light' | 'dark'
+
+export interface Highlight {
+    id: string
+    text: string
+    chapterSlug: string
+    chapterTitle: string
+    sectionSlug: string
+    sectionTitle: string
+    createdAt: number
+    color: string
+}
+
 interface BookStore {
     sidebarOpen: boolean
     toggleSidebar: () => void
@@ -18,6 +31,13 @@ interface BookStore {
     isCompleted: (chapterSlug: string, sectionSlug: string) => boolean
     getTotalCompleted: () => number
     loadFromStorage: () => void
+    theme: Theme
+    toggleTheme: () => void
+    initTheme: () => void
+    highlights: Highlight[]
+    addHighlight: (highlight: Omit<Highlight, 'id' | 'createdAt'>) => void
+    removeHighlight: (id: string) => void
+    loadHighlights: () => void
 }
 
 export const useBookStore = create<BookStore>((set, get) => ({
@@ -84,6 +104,60 @@ export const useBookStore = create<BookStore>((set, get) => ({
             })
         } catch {
             // Ignore parse errors
+        }
+    },
+
+    theme: 'dark',
+    toggleTheme: () => {
+        set(state => {
+            const next: Theme = state.theme === 'dark' ? 'light' : 'dark'
+            if (typeof window !== 'undefined') {
+                document.documentElement.setAttribute('data-theme', next)
+                localStorage.setItem('cryptobook-theme', next)
+            }
+            return { theme: next }
+        })
+    },
+    initTheme: () => {
+        if (typeof window === 'undefined') return
+        const stored = localStorage.getItem('cryptobook-theme') as Theme | null
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        const theme: Theme = stored || (prefersDark ? 'dark' : 'light')
+        document.documentElement.setAttribute('data-theme', theme)
+        set({ theme })
+    },
+
+    highlights: [],
+    addHighlight: (highlight) => {
+        const newHighlight: Highlight = {
+            ...highlight,
+            id: crypto.randomUUID(),
+            createdAt: Date.now(),
+        }
+        set(state => {
+            const updated = [newHighlight, ...state.highlights]
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('cryptobook-highlights', JSON.stringify(updated))
+            }
+            return { highlights: updated }
+        })
+    },
+    removeHighlight: (id) => {
+        set(state => {
+            const updated = state.highlights.filter(h => h.id !== id)
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('cryptobook-highlights', JSON.stringify(updated))
+            }
+            return { highlights: updated }
+        })
+    },
+    loadHighlights: () => {
+        if (typeof window === 'undefined') return
+        try {
+            const data = localStorage.getItem('cryptobook-highlights')
+            if (data) set({ highlights: JSON.parse(data) })
+        } catch {
+            // Ignore
         }
     },
 }))
