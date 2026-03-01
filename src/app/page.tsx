@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { BookOpen, ArrowRight, Blocks, Shield, Zap, Globe } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 const HeroScene = dynamic(() => import('@/components/three/HeroScene'), { ssr: false })
 
@@ -47,6 +48,11 @@ const itemVariants = {
 export default function HomePage() {
     return (
         <div className="min-h-screen bg-background">
+            {/* Theme toggle */}
+            <div className="fixed top-4 right-4 z-50">
+                <ThemeToggle className="bg-surface/50 backdrop-blur-sm border border-border" />
+            </div>
+
             {/* Hero Section */}
             <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
                 {/* 3D Background */}
