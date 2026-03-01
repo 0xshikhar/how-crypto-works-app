@@ -13,6 +13,7 @@ export interface Section {
     title: string
     content: string
     headings: Heading[]
+    readingTime: number // minutes
 }
 
 export interface Chapter {
@@ -32,6 +33,11 @@ function slugify(text: string): string {
         .replace(/[\s_]+/g, '-')
         .replace(/-+/g, '-')
         .replace(/^-|-$/g, '')
+}
+
+function estimateReadingTime(content: string): number {
+    const words = content.replace(/[#*_`\[\]()]/g, '').split(/\s+/).filter(Boolean).length
+    return Math.max(1, Math.ceil(words / 200))
 }
 
 function extractHeadings(content: string): Heading[] {
@@ -94,6 +100,7 @@ function splitIntoSections(content: string, chapterTitle: string): Section[] {
             title: chapterTitle,
             content: withoutTitle,
             headings: extractHeadings(withoutTitle),
+            readingTime: estimateReadingTime(withoutTitle),
         }]
     }
 
@@ -111,6 +118,7 @@ function splitIntoSections(content: string, chapterTitle: string): Section[] {
             title: sectionMatches[i].title,
             content: contentWithoutHeading,
             headings: extractHeadings(contentWithoutHeading),
+            readingTime: estimateReadingTime(contentWithoutHeading),
         })
     }
 
