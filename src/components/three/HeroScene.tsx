@@ -29,12 +29,9 @@ function FloatingBlock({ position, scale, speed }: { position: [number, number, 
 function ChainLink({ start, end }: { start: [number, number, number]; end: [number, number, number] }) {
     const points = [new THREE.Vector3(...start), new THREE.Vector3(...end)]
     const geometry = new THREE.BufferGeometry().setFromPoints(points)
+    const material = new THREE.LineBasicMaterial({ color: '#3b82f6', transparent: true, opacity: 0.1 })
 
-    return (
-        <line geometry={geometry}>
-            <lineBasicMaterial color="#3b82f6" transparent opacity={0.1} />
-        </line>
-    )
+    return <primitive object={new THREE.Line(geometry, material)} />
 }
 
 function Scene() {
