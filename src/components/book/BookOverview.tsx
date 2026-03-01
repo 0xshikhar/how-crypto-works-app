@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { BookOpen, ArrowRight, Layers, Check } from 'lucide-react'
+import { BookOpen, ArrowRight, Layers, Check, Clock } from 'lucide-react'
 import { useBookStore } from '@/lib/store'
 import type { Chapter } from '@/lib/content-loader'
 
@@ -53,6 +53,7 @@ export function BookOverview({ chapters }: { chapters: Chapter[] }) {
                         completedSections.includes(`${chapter.slug}/${s.slug}`)
                     ).length
                     const totalCount = chapter.sections.length
+                    const readingTime = chapter.sections.reduce((sum, s) => sum + s.readingTime, 0)
                     const progress = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
                     const isComplete = completedCount === totalCount && totalCount > 0
 
@@ -83,6 +84,10 @@ export function BookOverview({ chapters }: { chapters: Chapter[] }) {
                                         <span className="text-xs text-muted-dark flex items-center gap-1">
                                             <Layers className="w-3 h-3" />
                                             {totalCount} sections
+                                        </span>
+                                        <span className="text-xs text-muted-dark flex items-center gap-1">
+                                            <Clock className="w-3 h-3" />
+                                            {readingTime} min
                                         </span>
                                         {completedCount > 0 && (
                                             <span className="text-xs text-accent">
