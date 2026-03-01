@@ -6,10 +6,12 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     BookOpen, Menu, X, ChevronRight, Home,
-    ChevronDown, Check, Circle
+    ChevronDown, Check, Circle, Search
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useBookStore } from '@/lib/store'
+import { ThemeToggle } from '@/components/ThemeToggle'
+import { SearchDialog } from '@/components/book/SearchDialog'
 import type { Chapter } from '@/lib/content-loader'
 
 interface BookLayoutProps {
@@ -21,10 +23,23 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
     const pathname = usePathname()
     const { sidebarOpen, setSidebarOpen, loadFromStorage, completedSections } = useBookStore()
     const [expandedChapters, setExpandedChapters] = useState<string[]>([])
+    const [searchOpen, setSearchOpen] = useState(false)
 
     useEffect(() => {
         loadFromStorage()
     }, [loadFromStorage])
+
+    // Keyboard shortcut: Cmd/Ctrl+K for search
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault()
+                setSearchOpen(prev => !prev)
+            }
+        }
+        window.addEventListener('keydown', handler)
+        return () => window.removeEventListener('keydown', handler)
+    }, [])
 
     // Auto-expand current chapter
     useEffect(() => {
@@ -220,10 +235,19 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                     {/* Breadcrumb */}
                     <Breadcrumb pathname={pathname} chapters={chapters} />
 
-                    {/* Global progress */}
-                    <div className="ml-auto flex items-center gap-2">
-                        <span className="text-xs text-muted hidden sm:block">{progressPercent}% complete</span>
-                        <div className="w-20 h-1.5 bg-surface-light rounded-full overflow-hidden">
+                    {/* Global progress + actions */}
+                    <div className="ml-auto flex items-center gap-1.5">
+                        <button
+                            onClick={() => setSearchOpen(true)}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface/50 hover:bg-surface-light transition-colors text-muted text-xs"
+                        >
+                            <Search className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">Search</span>
+                            <kbd className="hidden sm:inline text-[10px] px-1.5 py-0.5 rounded bg-surface-light border border-border font-mono">⌘K</kbd>
+                        </button>
+                        <ThemeToggle />
+                        <span className="text-xs text-muted hidden sm:block ml-1">{progressPercent}%</span>
+                        <div className="w-16 h-1.5 bg-surface-light rounded-full overflow-hidden">
                             <div
                                 className="h-full bg-accent rounded-full transition-all duration-500"
                                 style={{ width: `${progressPercent}%` }}
@@ -231,6 +255,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                         </div>
                     </div>
                 </header>
+                <SearchDialog chapters={chapters} open={searchOpen} onOpenChange={setSearchOpen} />
 
                 {/* Content */}
                 <main className="flex-1">
