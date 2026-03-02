@@ -1,6 +1,8 @@
 import { getSection, getAllChapters } from '@/lib/content-loader'
 import { notFound } from 'next/navigation'
+import { MDXRemote } from 'next-mdx-remote/rsc'
 import { SectionView } from '@/components/book/SectionView'
+import { mdxComponentsRsc } from '@/lib/mdx-components-rsc'
 import type { Metadata } from 'next'
 
 export async function generateStaticParams() {
@@ -38,10 +40,15 @@ export default async function SectionPage({
         notFound()
     }
 
+    const renderedContent = (
+        <MDXRemote source={data.section.content} components={mdxComponentsRsc} />
+    )
+
     return (
         <SectionView
             chapter={data.chapter}
             section={data.section}
+            content={renderedContent}
             prevSection={data.prevSection}
             nextSection={data.nextSection}
         />

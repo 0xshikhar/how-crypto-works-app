@@ -13,25 +13,17 @@ import type { Chapter, Section } from '@/lib/content-loader'
 interface SectionViewProps {
   chapter: Chapter
   section: Section
+  content: React.ReactNode
   prevSection?: { chapter: Chapter; section: Section }
   nextSection?: { chapter: Chapter; section: Section }
 }
 
-function MDXContent({ content, onReady }: { content: string; onReady?: () => void }) {
-  void content
-  useEffect(() => {
-    onReady?.()
-  }, [onReady])
-  return <div>mdx content</div>
-}
-
-export function SectionView({ chapter, section, prevSection, nextSection }: SectionViewProps) {
+export function SectionView({ chapter, section, content, prevSection, nextSection }: SectionViewProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
   const { markCompleted, isCompleted, updateProgress, loadHighlights, highlights } = useBookStore()
   const isComplete = isCompleted(chapter.slug, section.slug)
-  const [mdxReady, setMdxReady] = useState(false)
-
+  const [contentReady, setContentReady] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
 
   const sectionHighlights = useMemo<Highlight[]>(
@@ -113,22 +105,18 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
             <span>{section.readingTime} min read</span>
           </div>
 
-          {/* Content */}
           <div ref={contentRef} className="prose prose-invert max-w-none">
-            <MDXContent content={section.content} onReady={() => setMdxReady(true)} />
+            {content}
           </div>
 
-          {false && (
-            <HighlightPopover
-              chapterSlug={chapter.slug}
-              chapterTitle={chapter.title}
-              sectionSlug={section.slug}
-              sectionTitle={section.title}
-              contentRootRef={contentRef}
-            />
-          )}
+          <HighlightPopover
+            chapterSlug={chapter.slug}
+            chapterTitle={chapter.title}
+            sectionSlug={section.slug}
+            sectionTitle={section.title}
+            contentRootRef={contentRef}
+          />
 
-          {/* Mark complete */}
           <div className="mt-16 pt-8 border-t border-border">
             <button
               onClick={() => markCompleted(chapter.slug, section.slug)}
