@@ -4,12 +4,8 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock, ArrowUp } from 'lucide-react'
-import { MDXRemote } from 'next-mdx-remote'
-import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
-import { serialize } from 'next-mdx-remote/serialize'
 import { useBookStore } from '@/lib/store'
 import type { Highlight } from '@/lib/store'
-import { mdxComponents } from '@/lib/mdx-components'
 import { HighlightPopover } from '@/components/book/HighlightPopover'
 import { renderSectionHighlights } from '@/lib/highlight-utils'
 import type { Chapter, Section } from '@/lib/content-loader'
@@ -22,35 +18,11 @@ interface SectionViewProps {
 }
 
 function MDXContent({ content, onReady }: { content: string; onReady?: () => void }) {
-  const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(null)
-
+  void content
   useEffect(() => {
-    const serializeMdx = async () => {
-      const serialized = await serialize(content, {
-        mdxOptions: { remarkPlugins: [], rehypePlugins: [] },
-      })
-      setMdxSource(serialized)
-    }
-    serializeMdx()
-  }, [content])
-
-  useEffect(() => {
-    if (!mdxSource) return
     onReady?.()
-  }, [mdxSource, onReady])
-
-  if (!mdxSource) {
-    const skeletonWidths = [82, 71, 74, 95, 96, 86, 84, 71]
-    return (
-      <div className="space-y-4 animate-pulse">
-        {skeletonWidths.map((w, i) => (
-          <div key={i} className="h-4 bg-surface-light rounded" style={{ width: `${w}%` }} />
-        ))}
-      </div>
-    )
-  }
-
-  return <MDXRemote {...mdxSource} components={mdxComponents} />
+  }, [onReady])
+  return <div>mdx content</div>
 }
 
 export function SectionView({ chapter, section, prevSection, nextSection }: SectionViewProps) {
@@ -146,13 +118,15 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
             <MDXContent content={section.content} onReady={() => setMdxReady(true)} />
           </div>
 
-          <HighlightPopover
-            chapterSlug={chapter.slug}
-            chapterTitle={chapter.title}
-            sectionSlug={section.slug}
-            sectionTitle={section.title}
-            contentRootRef={contentRef}
-          />
+          {false && (
+            <HighlightPopover
+              chapterSlug={chapter.slug}
+              chapterTitle={chapter.title}
+              sectionSlug={section.slug}
+              sectionTitle={section.title}
+              contentRootRef={contentRef}
+            />
+          )}
 
           {/* Mark complete */}
           <div className="mt-16 pt-8 border-t border-border">
