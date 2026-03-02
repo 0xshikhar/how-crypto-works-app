@@ -1,6 +1,8 @@
-import "./globals.css"
-import type { Metadata } from "next"
-import { ThemeProvider } from "@/components/ThemeProvider"
+/* eslint-disable @next/next/no-page-custom-font */
+
+import './globals.css'
+import type { Metadata } from 'next'
+import { ThemeProvider } from '@/components/ThemeProvider'
 
 export const metadata: Metadata = {
   title: {

@@ -8,6 +8,8 @@ import { InfoBox } from '@/components/mdx/InfoBox'
 import { InteractiveDiagram } from '@/components/diagrams/InteractiveDiagram'
 import { cn } from '@/lib/utils'
 
+/* eslint-disable @next/next/no-img-element */
+
 function slugify(text: string): string {
   return text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
 }
