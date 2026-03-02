@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    transpilePackages: ['three'],
-    webpack: (config) => {
-        config.resolve.alias = {
-            ...config.resolve.alias,
-        }
-        return config
-    },
+    reactStrictMode: true,
+
+    experimental: {
+        mdxRs: true
+    }
 }
 
 module.exports = nextConfig
