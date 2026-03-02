@@ -74,17 +74,30 @@ export default function HomePage() {
                     transition={{ duration: 0.8, ease: 'easeOut' }}
                 >
                     <motion.div
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-md mb-8 shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface/60 backdrop-blur-md mb-6 shadow-[0_0_15px_rgba(59,130,246,0.12)]"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.2 }}
                     >
-                        <Globe className="w-4 h-4 text-blue-400" />
-                        <span className="text-sm text-blue-100 font-medium tracking-wide">The Missing Manual for Crypto</span>
+                        <Globe className="w-4 h-4 text-accent" />
+                        <span className="text-sm text-foreground font-medium tracking-wide">The Missing Manual for Crypto</span>
                     </motion.div>
 
+                    <div className="mb-3 flex items-center justify-center">
+                        <a
+                            href="https://github.com/lawmaster10/howcryptoworksbook"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 backdrop-blur-sm px-4 py-1.5 text-[11px] uppercase tracking-[0.25em] text-muted hover:text-foreground transition-colors"
+                            title="Inspired from How Crypto Works Book"
+                        >
+                            <span className="text-accent">Tag</span>
+                            <span>How Crypto Works Book</span>
+                        </a>
+                    </div>
+
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[1.05] drop-shadow-2xl">
-                        <span className="text-white">
+                        <span className="text-foreground">
                             How Crypto
                         </span>
                         <br />
@@ -93,9 +106,9 @@ export default function HomePage() {
                         </span>
                     </h1>
 
-                    <p className="text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                    <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10 leading-relaxed font-light">
                         An interactive deep-dive into cryptocurrency, blockchain technology,
-                        and decentralized finance — with <strong className="text-white font-semibold shadow-black drop-shadow-md">3D visualizations</strong>, quizzes, and
+                        and decentralized finance — with <strong className="text-foreground font-semibold">3D visualizations</strong>, quizzes, and
                         book-like navigation.
                     </p>
 
@@ -115,11 +128,11 @@ export default function HomePage() {
 
                         <a href="https://github.com/0xshikhar/how-crypto-works-app" target="_blank" rel="noopener noreferrer">
                             <motion.button
-                                className="group flex items-center gap-2 px-8 py-4 rounded-xl bg-zinc-900 border border-zinc-700 hover:border-zinc-500 text-white font-medium text-lg transition-all duration-300"
+                                className="group flex items-center gap-2 px-8 py-4 rounded-xl bg-surface border border-border hover:bg-surface-light hover:border-border-light text-foreground font-medium text-lg transition-all duration-300"
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
                             >
-                                <Github className="w-5 h-5 group-hover:text-white transition-colors" />
+                                <Github className="w-5 h-5 transition-colors" />
                                 View Source
                             </motion.button>
                         </a>
@@ -144,9 +157,9 @@ export default function HomePage() {
             </section>
 
             {/* Features Section */}
-            <section className="relative py-32 px-6 bg-zinc-950">
+            <section className="relative py-28 px-6 bg-background">
                 {/* Subtle top border glow */}
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-900/50 to-transparent opacity-50" />
+                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent opacity-70" />
 
                 <motion.div
                     className="max-w-6xl mx-auto relative z-10"
@@ -157,14 +170,14 @@ export default function HomePage() {
                 >
                     <motion.h2
                         variants={itemVariants}
-                        className="text-4xl md:text-5xl font-extrabold text-center mb-4 tracking-tight"
+                        className="text-4xl md:text-5xl font-extrabold text-center mb-4 tracking-tight text-foreground"
                     >
                         Learn Crypto the{' '}
                         <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent filter drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">Right Way</span>
                     </motion.h2>
                     <motion.p
                         variants={itemVariants}
-                        className="text-zinc-400 text-center mb-20 max-w-xl mx-auto text-lg font-light"
+                        className="text-muted text-center mb-16 max-w-xl mx-auto text-lg font-light"
                     >
                         Not just documentation — an immersive visual learning experience
                     </motion.p>
@@ -174,17 +187,17 @@ export default function HomePage() {
                             <motion.div
                                 key={feature.title}
                                 variants={itemVariants}
-                                className="group relative p-8 rounded-[2rem] border border-zinc-800/80 bg-zinc-900/40 backdrop-blur-xl hover:bg-zinc-900/80 hover:border-blue-500/30 transition-all duration-500"
+                                className="group relative p-8 rounded-[2rem] border border-border bg-surface/50 backdrop-blur-xl hover:bg-surface hover:border-border-light transition-all duration-500"
                                 whileHover={{ y: -8 }}
                             >
                                 {/* Hover Glow */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/6 to-purple-500/6 rounded-[2rem] opacity-0 group-hover:opacity-70 transition-opacity duration-500 pointer-events-none" />
 
-                                <div className="w-14 h-14 rounded-2xl bg-zinc-800/80 group-hover:bg-blue-900/30 border border-zinc-700/50 group-hover:border-blue-700/50 flex items-center justify-center mb-6 transition-colors duration-500">
+                                <div className="w-14 h-14 rounded-2xl bg-surface-light border border-border flex items-center justify-center mb-6 transition-colors duration-500">
                                     <feature.icon className="w-7 h-7 text-blue-400 group-hover:text-blue-300 transition-colors duration-500" />
                                 </div>
-                                <h3 className="font-bold text-xl mb-3 text-white tracking-tight">{feature.title}</h3>
-                                <p className="text-sm text-zinc-400 leading-relaxed font-light">
+                                <h3 className="font-bold text-xl mb-3 text-foreground tracking-tight">{feature.title}</h3>
+                                <p className="text-sm text-muted leading-relaxed font-light">
                                     {feature.description}
                                 </p>
                             </motion.div>
@@ -194,13 +207,13 @@ export default function HomePage() {
             </section>
 
             {/* Footer */}
-            <footer className="border-t border-zinc-900 bg-zinc-950 py-10 px-6">
+            <footer className="border-t border-border bg-surface py-10 px-6">
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <p className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
-                        Built from{' '}
+                    <p className="text-sm text-muted hover:text-foreground transition-colors">
+                        Inspired from{' '}
                         <a
                             href="https://github.com/lawmaster10/howcryptoworksbook"
-                            className="text-blue-400 hover:text-blue-300 hover:underline"
+                            className="text-accent hover:text-accent-light hover:underline"
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -208,11 +221,11 @@ export default function HomePage() {
                         </a>
                     </p>
                     <div className="flex items-center gap-6">
-                        <span className="text-sm text-zinc-600 font-mono bg-zinc-900 border border-zinc-800 px-3 py-1 rounded-full">v1.0.0</span>
-                        <a href="https://github.com/0xshikhar/how-crypto-works-app" className="text-zinc-500 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
+                        <span className="text-sm text-muted font-mono bg-background border border-border px-3 py-1 rounded-full">v1.0.0</span>
+                        <a href="https://github.com/0xshikhar/how-crypto-works-app" className="text-muted hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">
                             <Github className="w-5 h-5" />
                         </a>
-                        <a href="https://twitter.com/0xshikhar" className="text-zinc-500 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
+                        <a href="https://twitter.com/0xshikhar" className="text-muted hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">
                             <Twitter className="w-5 h-5" />
                         </a>
                     </div>
