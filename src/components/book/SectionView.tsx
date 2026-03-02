@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock, ArrowUp } from 'lucide-react'
@@ -8,8 +8,10 @@ import { MDXRemote } from 'next-mdx-remote'
 import type { MDXRemoteSerializeResult } from 'next-mdx-remote'
 import { serialize } from 'next-mdx-remote/serialize'
 import { useBookStore } from '@/lib/store'
+import type { Highlight } from '@/lib/store'
 import { mdxComponents } from '@/lib/mdx-components'
 import { HighlightPopover } from '@/components/book/HighlightPopover'
+import { renderSectionHighlights } from '@/lib/highlight-utils'
 import type { Chapter, Section } from '@/lib/content-loader'
 
 interface SectionViewProps {
@@ -19,7 +21,7 @@ interface SectionViewProps {
   nextSection?: { chapter: Chapter; section: Section }
 }
 
-function MDXContent({ content }: { content: string }) {
+function MDXContent({ content, onReady }: { content: string; onReady?: () => void }) {
   const [mdxSource, setMdxSource] = useState<MDXRemoteSerializeResult | null>(null)
 
   useEffect(() => {
@@ -32,11 +34,17 @@ function MDXContent({ content }: { content: string }) {
     serializeMdx()
   }, [content])
 
+  useEffect(() => {
+    if (!mdxSource) return
+    onReady?.()
+  }, [mdxSource, onReady])
+
   if (!mdxSource) {
+    const skeletonWidths = [82, 71, 74, 95, 96, 86, 84, 71]
     return (
       <div className="space-y-4 animate-pulse">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="h-4 bg-surface-light rounded" style={{ width: `${70 + Math.random() * 30}%` }} />
+        {skeletonWidths.map((w, i) => (
+          <div key={i} className="h-4 bg-surface-light rounded" style={{ width: `${w}%` }} />
         ))}
       </div>
     )
@@ -47,12 +55,33 @@ function MDXContent({ content }: { content: string }) {
 
 export function SectionView({ chapter, section, prevSection, nextSection }: SectionViewProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const { markCompleted, isCompleted, updateProgress, loadHighlights } = useBookStore()
+  const contentRef = useRef<HTMLDivElement>(null)
+  const { markCompleted, isCompleted, updateProgress, loadHighlights, highlights } = useBookStore()
   const isComplete = isCompleted(chapter.slug, section.slug)
+  const [mdxReady, setMdxReady] = useState(false)
 
   const [showBackToTop, setShowBackToTop] = useState(false)
 
+  const sectionHighlights = useMemo<Highlight[]>(
+    () => highlights.filter(h => h.chapterSlug === chapter.slug && h.sectionSlug === section.slug),
+    [chapter.slug, section.slug, highlights]
+  )
+
   useEffect(() => { loadHighlights() }, [loadHighlights])
+
+  useEffect(() => {
+    setMdxReady(false)
+  }, [chapter.slug, section.slug])
+
+  useEffect(() => {
+    if (!mdxReady || !contentRef.current) return
+    const rafId = window.requestAnimationFrame(() => {
+      if (contentRef.current) {
+        renderSectionHighlights(contentRef.current, sectionHighlights)
+      }
+    })
+    return () => window.cancelAnimationFrame(rafId)
+  }, [mdxReady, sectionHighlights])
 
   // Track scroll progress on window scroll
   useEffect(() => {
@@ -113,8 +142,8 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
           </div>
 
           {/* Content */}
-          <div className="prose prose-invert max-w-none">
-            <MDXContent content={section.content} />
+          <div ref={contentRef} className="prose prose-invert max-w-none">
+            <MDXContent content={section.content} onReady={() => setMdxReady(true)} />
           </div>
 
           <HighlightPopover
@@ -122,6 +151,7 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
             chapterTitle={chapter.title}
             sectionSlug={section.slug}
             sectionTitle={section.title}
+            contentRootRef={contentRef}
           />
 
           {/* Mark complete */}
@@ -129,8 +159,8 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
             <button
               onClick={() => markCompleted(chapter.slug, section.slug)}
               className={`inline-flex items-center gap-2.5 px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${isComplete
-                  ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 cursor-default'
-                  : 'bg-surface border border-border hover:border-accent/40 hover:bg-surface-light'
+                ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 cursor-default'
+                : 'bg-surface border border-border hover:border-accent/40 hover:bg-surface-light'
                 }`}
             >
               <Check className={`w-4 h-4 ${isComplete ? 'text-[#22c55e]' : 'text-muted'}`} />
