@@ -17,6 +17,8 @@ export interface Highlight {
     sectionTitle: string
     createdAt: number
     color: string
+    startOffset?: number
+    endOffset?: number
 }
 
 interface BookStore {
