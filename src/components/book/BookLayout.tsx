@@ -93,7 +93,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                         <div className="p-4 border-b border-border flex items-center justify-between">
                             <Link href="/" className="flex items-center gap-2.5 group">
                                 <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center group-hover:bg-accent/30 transition-colors">
-                                    <BookOpen className="w-4 h-4 text-accent" />
+                                    <BookOpen suppressHydrationWarning className="w-4 h-4 text-accent" />
                                 </div>
                                 <span className="font-semibold text-sm">CryptoBook</span>
                             </Link>
@@ -101,7 +101,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                                 onClick={() => setSidebarOpen(false)}
                                 className="lg:hidden p-1.5 rounded-lg hover:bg-surface-light transition-colors"
                             >
-                                <X className="w-4 h-4 text-muted" />
+                                <X suppressHydrationWarning className="w-4 h-4 text-muted" />
                             </button>
                         </div>
 
@@ -132,7 +132,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                                         : 'text-muted hover:text-foreground hover:bg-surface-light'
                                 )}
                             >
-                                <Home className="w-4 h-4" />
+                                <Home suppressHydrationWarning className="w-4 h-4" />
                                 Overview
                             </Link>
                             <Link
@@ -144,7 +144,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                                         : 'text-muted hover:text-foreground hover:bg-surface-light'
                                 )}
                             >
-                                <Highlighter className="w-4 h-4" />
+                                <Highlighter suppressHydrationWarning className="w-4 h-4" />
                                 Highlights
                                 {highlights.length > 0 && (
                                     <span className="ml-auto text-[11px] px-1.5 py-0.5 rounded-full bg-surface-light text-muted-dark">
@@ -172,6 +172,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                                             )}
                                         >
                                             <ChevronDown
+                                                suppressHydrationWarning
                                                 className={cn(
                                                     'w-3.5 h-3.5 shrink-0 transition-transform duration-200',
                                                     !isExpanded && '-rotate-90'
@@ -182,7 +183,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                                             </span>
                                             <span className="truncate text-left flex-1">{chapter.title}</span>
                                             {chapterCompleted && (
-                                                <Check className="w-3.5 h-3.5 text-success shrink-0" />
+                                                <Check suppressHydrationWarning className="w-3.5 h-3.5 text-success shrink-0" />
                                             )}
                                         </button>
 
@@ -216,9 +217,9 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                                                                     )}
                                                                 >
                                                                     {isComplete ? (
-                                                                        <Check className="w-3 h-3 text-success shrink-0" />
+                                                                        <Check suppressHydrationWarning className="w-3 h-3 text-success shrink-0" />
                                                                     ) : (
-                                                                        <Circle className={cn(
+                                                                        <Circle suppressHydrationWarning className={cn(
                                                                             'w-2 h-2 shrink-0',
                                                                             isActive ? 'text-accent fill-accent' : 'text-muted-dark'
                                                                         )} />
@@ -247,7 +248,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         className="p-2 rounded-lg hover:bg-surface-light transition-colors"
                     >
-                        <Menu className="w-4 h-4 text-muted" />
+                        <Menu suppressHydrationWarning className="w-4 h-4 text-muted" />
                     </button>
 
                     {/* Breadcrumb */}
@@ -259,7 +260,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                             onClick={() => setSearchOpen(true)}
                             className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border bg-surface/50 hover:bg-surface-light transition-colors text-muted text-xs"
                         >
-                            <Search className="w-3.5 h-3.5" />
+                            <Search suppressHydrationWarning className="w-3.5 h-3.5" />
                             <span className="hidden sm:inline">Search</span>
                             <kbd className="hidden sm:inline text-[10px] px-1.5 py-0.5 rounded bg-surface-light border border-border font-mono">⌘K</kbd>
                         </button>
@@ -290,7 +291,7 @@ function Breadcrumb({ pathname, chapters }: { pathname: string; chapters: Chapte
     if (parts.length <= 1) {
         return (
             <div className="flex items-center gap-1 text-sm">
-                <BookOpen className="w-3.5 h-3.5 text-accent" />
+                <BookOpen suppressHydrationWarning className="w-3.5 h-3.5 text-accent" />
                 <span className="text-muted">Book</span>
             </div>
         )
@@ -308,7 +309,7 @@ function Breadcrumb({ pathname, chapters }: { pathname: string; chapters: Chapte
             </Link>
             {chapter && (
                 <>
-                    <ChevronRight className="w-3 h-3 text-muted-dark shrink-0" />
+                    <ChevronRight suppressHydrationWarning className="w-3 h-3 text-muted-dark shrink-0" />
                     <Link
                         href={`/book/${chapter.slug}/${chapter.sections[0]?.slug || ''}`}
                         className="text-muted hover:text-foreground transition-colors truncate"
@@ -319,7 +320,7 @@ function Breadcrumb({ pathname, chapters }: { pathname: string; chapters: Chapte
             )}
             {section && (
                 <>
-                    <ChevronRight className="w-3 h-3 text-muted-dark shrink-0 hidden sm:block" />
+                    <ChevronRight suppressHydrationWarning className="w-3 h-3 text-muted-dark shrink-0 hidden sm:block" />
                     <span className="text-foreground truncate hidden sm:block">{section.title}</span>
                 </>
             )}

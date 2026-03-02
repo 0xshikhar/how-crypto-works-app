@@ -14,9 +14,9 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
         >
             {theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-muted hover:text-foreground transition-colors" />
+                <Sun suppressHydrationWarning className="w-4 h-4 text-muted hover:text-foreground transition-colors" />
             ) : (
-                <Moon className="w-4 h-4 text-muted hover:text-foreground transition-colors" />
+                <Moon suppressHydrationWarning className="w-4 h-4 text-muted hover:text-foreground transition-colors" />
             )}
         </button>
     )
