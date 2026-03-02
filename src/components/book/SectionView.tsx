@@ -34,20 +34,21 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
   useEffect(() => { loadHighlights() }, [loadHighlights])
 
   useEffect(() => {
-    setMdxReady(false)
-  }, [chapter.slug, section.slug])
+    setContentReady(false)
+    const rafId = window.requestAnimationFrame(() => setContentReady(true))
+    return () => window.cancelAnimationFrame(rafId)
+  }, [chapter.slug, section.slug, content])
 
   useEffect(() => {
-    if (!mdxReady || !contentRef.current) return
+    if (!contentReady || !contentRef.current) return
     const rafId = window.requestAnimationFrame(() => {
       if (contentRef.current) {
         renderSectionHighlights(contentRef.current, sectionHighlights)
       }
     })
     return () => window.cancelAnimationFrame(rafId)
-  }, [mdxReady, sectionHighlights])
+  }, [contentReady, sectionHighlights])
 
-  // Track scroll progress on window scroll
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY
@@ -62,7 +63,6 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
     return () => window.removeEventListener('scroll', handleScroll)
   }, [chapter.slug, section.slug, updateProgress])
 
-  // Active heading tracking via IntersectionObserver
   const [activeId, setActiveId] = useState<string>('')
   useEffect(() => {
     if (section.headings.length === 0) return
@@ -78,7 +78,6 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
 
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)]">
-      {/* Main content */}
       <div ref={scrollContainerRef} className="flex-1 min-w-0">
         <motion.article
           initial={{ opacity: 0, y: 16 }}
@@ -87,7 +86,6 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
           key={section.slug}
           className="max-w-3xl mx-auto px-6 py-10 pb-24"
         >
-          {/* Breadcrumb */}
           <div className="flex items-center gap-1.5 text-sm text-muted mb-6">
             <Link href="/book" className="hover:text-foreground transition-colors">Book</Link>
             <ChevronRight className="w-3.5 h-3.5 text-muted-dark" />
@@ -96,7 +94,6 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
             </Link>
           </div>
 
-          {/* Section title */}
           <h1 className="text-3xl md:text-4xl font-extrabold mb-3 leading-tight tracking-tight bg-gradient-to-r from-foreground to-muted bg-clip-text text-transparent">
             {section.title}
           </h1>
@@ -130,7 +127,6 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
             </button>
           </div>
 
-          {/* Prev / Next navigation */}
           <div className="mt-10 flex items-center justify-between gap-4">
             {prevSection ? (
               <Link
@@ -161,7 +157,6 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
         </motion.article>
       </div>
 
-      {/* Back to top */}
       <AnimatePresence>
         {showBackToTop && (
           <motion.button
@@ -177,7 +172,6 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
         )}
       </AnimatePresence>
 
-      {/* Right TOC sidebar */}
       {section.headings.length > 0 && (
         <aside className="hidden xl:block w-56 shrink-0 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto border-l border-border px-4 py-8">
           <h3 className="text-[11px] uppercase tracking-widest font-semibold text-muted-dark mb-4">On this page</h3>
@@ -191,11 +185,7 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
                   document.getElementById(h.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
                   setActiveId(h.id)
                 }}
-                className={`block text-[13px] py-1 transition-colors leading-snug ${h.depth === 2 ? 'pl-0' : h.depth === 3 ? 'pl-3' : 'pl-6'
-                  } ${activeId === h.id
-                    ? 'text-accent font-medium'
-                    : 'text-muted-dark hover:text-foreground'
-                  }`}
+                className={`block text-[13px] py-1 transition-colors leading-snug ${h.depth === 2 ? 'pl-0' : h.depth === 3 ? 'pl-3' : 'pl-6'} ${activeId === h.id ? 'text-accent font-medium' : 'text-muted-dark hover:text-foreground'}`}
               >
                 {h.text}
               </a>
