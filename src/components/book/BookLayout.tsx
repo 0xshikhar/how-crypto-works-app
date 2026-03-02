@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
     BookOpen, Menu, X, ChevronRight, Home,
-    ChevronDown, Check, Circle, Search
+    ChevronDown, Check, Circle, Search, Highlighter
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useBookStore } from '@/lib/store'
@@ -21,13 +21,14 @@ interface BookLayoutProps {
 
 export function BookLayout({ chapters, children }: BookLayoutProps) {
     const pathname = usePathname()
-    const { sidebarOpen, setSidebarOpen, loadFromStorage, completedSections } = useBookStore()
+    const { sidebarOpen, setSidebarOpen, loadFromStorage, completedSections, highlights, loadHighlights } = useBookStore()
     const [expandedChapters, setExpandedChapters] = useState<string[]>([])
     const [searchOpen, setSearchOpen] = useState(false)
 
     useEffect(() => {
         loadFromStorage()
-    }, [loadFromStorage])
+        loadHighlights()
+    }, [loadFromStorage, loadHighlights])
 
     // Keyboard shortcut: Cmd/Ctrl+K for search
     useEffect(() => {
@@ -125,7 +126,7 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                             <Link
                                 href="/book"
                                 className={cn(
-                                    'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors mb-1',
+                                    'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors mb-0.5',
                                     pathname === '/book'
                                         ? 'bg-accent/10 text-accent'
                                         : 'text-muted hover:text-foreground hover:bg-surface-light'
@@ -133,6 +134,23 @@ export function BookLayout({ chapters, children }: BookLayoutProps) {
                             >
                                 <Home className="w-4 h-4" />
                                 Overview
+                            </Link>
+                            <Link
+                                href="/book/highlights"
+                                className={cn(
+                                    'flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors mb-1',
+                                    pathname === '/book/highlights'
+                                        ? 'bg-amber-500/10 text-amber-500'
+                                        : 'text-muted hover:text-foreground hover:bg-surface-light'
+                                )}
+                            >
+                                <Highlighter className="w-4 h-4" />
+                                Highlights
+                                {highlights.length > 0 && (
+                                    <span className="ml-auto text-[11px] px-1.5 py-0.5 rounded-full bg-surface-light text-muted-dark">
+                                        {highlights.length}
+                                    </span>
+                                )}
                             </Link>
 
                             {chapters.map((chapter, idx) => {
