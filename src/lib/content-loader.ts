@@ -26,12 +26,14 @@ export interface Chapter {
 
 const CONTENT_DIR_CANDIDATES = [
     process.env.CRYPTOBOOK_CONTENT_DIR,
+    path.join(process.cwd(), 'content', 'Chapters'),
+    path.join(process.cwd(), 'web-app', 'content', 'Chapters'),
     path.join(process.cwd(), 'howcryptoworksbook', 'Chapters'),
     path.join(process.cwd(), '..', 'howcryptoworksbook', 'Chapters'),
 ].filter((value): value is string => Boolean(value))
 
 function resolveContentDir(): string | null {
-    for (const candidate of CONTENT_DIR_CANDIDATES) {
+    for (const candidate of Array.from(new Set(CONTENT_DIR_CANDIDATES))) {
         if (fs.existsSync(candidate)) return candidate
     }
     return null
@@ -138,7 +140,14 @@ function splitIntoSections(content: string, chapterTitle: string): Section[] {
 
 export function getAllChapters(): Chapter[] {
     const contentDir = resolveContentDir()
-    if (!contentDir) return []
+    if (!contentDir) {
+        if (process.env.NODE_ENV === 'production') {
+            throw new Error(
+                `Chapter content directory not found. Checked: ${CONTENT_DIR_CANDIDATES.join(', ')}`
+            )
+        }
+        return []
+    }
     const files = fs.readdirSync(contentDir).filter(f => f.endsWith('.md'))
 
     const chapters: Chapter[] = files.map(filename => {
