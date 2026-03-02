@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import type { RefObject } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Highlighter } from 'lucide-react'
 import { useBookStore } from '@/lib/store'
+import { getSelectionOffsets } from '@/lib/highlight-utils'
 
 const HIGHLIGHT_COLORS = [
     { name: 'yellow', value: '#fbbf24' },
@@ -18,6 +20,7 @@ interface HighlightPopoverProps {
     chapterTitle: string
     sectionSlug: string
     sectionTitle: string
+    contentRootRef: RefObject<HTMLElement | null>
 }
 
 export function HighlightPopover({
@@ -25,10 +28,12 @@ export function HighlightPopover({
     chapterTitle,
     sectionSlug,
     sectionTitle,
+    contentRootRef,
 }: HighlightPopoverProps) {
     const [show, setShow] = useState(false)
     const [position, setPosition] = useState({ x: 0, y: 0 })
     const [selectedText, setSelectedText] = useState('')
+    const [selectionOffsets, setSelectionOffsets] = useState<{ startOffset: number; endOffset: number } | null>(null)
     const popoverRef = useRef<HTMLDivElement>(null)
     const addHighlight = useBookStore(s => s.addHighlight)
 
@@ -44,15 +49,28 @@ export function HighlightPopover({
         if (text.length < 3) return
 
         const range = selection.getRangeAt(0)
+        const root = contentRootRef.current
+        if (!root || !root.contains(range.commonAncestorContainer)) {
+            setShow(false)
+            return
+        }
+
+        const offsets = getSelectionOffsets(root, range)
+        if (!offsets) {
+            setShow(false)
+            return
+        }
+
         const rect = range.getBoundingClientRect()
 
         setSelectedText(text)
+        setSelectionOffsets(offsets)
         setPosition({
             x: rect.left + rect.width / 2,
             y: rect.top + window.scrollY - 8,
         })
         setShow(true)
-    }, [])
+    }, [contentRootRef])
 
     useEffect(() => {
         document.addEventListener('mouseup', handleSelection)
@@ -71,8 +89,11 @@ export function HighlightPopover({
             sectionSlug,
             sectionTitle,
             color,
+            startOffset: selectionOffsets?.startOffset,
+            endOffset: selectionOffsets?.endOffset,
         })
         window.getSelection()?.removeAllRanges()
+        setSelectionOffsets(null)
         setShow(false)
     }
 
