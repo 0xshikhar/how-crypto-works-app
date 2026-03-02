@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { RotateCcw, ZoomIn, ZoomOut, Move3D } from 'lucide-react'
 
+
 // Lazy-load diagrams
 const diagrams: Record<string, React.ComponentType<{ resetKey?: number }>> = {
   blockchain: dynamic(() => import('./BlockchainDiagram'), { ssr: false }),

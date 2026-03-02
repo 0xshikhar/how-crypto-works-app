@@ -41,7 +41,7 @@ function UTXO({
                 <Text position={[0, 0.2, 0]} fontSize={0.12} color="#f1f5f9" anchorX="center">
                     {label}
                 </Text>
-                <Text position={[0, -0.02, 0]} fontSize={0.15} color="#f59e0b" anchorX="center" fontWeight={700}>
+                <Text position={[0, -0.02, 0]} fontSize={0.15} color="#f59e0b" anchorX="center">
                     {amount}
                 </Text>
             </Float>
