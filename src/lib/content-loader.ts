@@ -24,7 +24,18 @@ export interface Chapter {
     description?: string
 }
 
-const CONTENT_DIR = path.join(process.cwd(), '..', 'howcryptoworksbook', 'Chapters')
+const CONTENT_DIR_CANDIDATES = [
+    process.env.CRYPTOBOOK_CONTENT_DIR,
+    path.join(process.cwd(), 'howcryptoworksbook', 'Chapters'),
+    path.join(process.cwd(), '..', 'howcryptoworksbook', 'Chapters'),
+].filter((value): value is string => Boolean(value))
+
+function resolveContentDir(): string | null {
+    for (const candidate of CONTENT_DIR_CANDIDATES) {
+        if (fs.existsSync(candidate)) return candidate
+    }
+    return null
+}
 
 function slugify(text: string): string {
     return text
@@ -126,10 +137,12 @@ function splitIntoSections(content: string, chapterTitle: string): Section[] {
 }
 
 export function getAllChapters(): Chapter[] {
-    const files = fs.readdirSync(CONTENT_DIR).filter(f => f.endsWith('.md'))
+    const contentDir = resolveContentDir()
+    if (!contentDir) return []
+    const files = fs.readdirSync(contentDir).filter(f => f.endsWith('.md'))
 
     const chapters: Chapter[] = files.map(filename => {
-        const filePath = path.join(CONTENT_DIR, filename)
+        const filePath = path.join(contentDir, filename)
         const fileContent = fs.readFileSync(filePath, 'utf-8')
         const { content } = matter(fileContent)
 
