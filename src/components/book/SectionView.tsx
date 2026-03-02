@@ -47,10 +47,12 @@ function MDXContent({ content }: { content: string }) {
 
 export function SectionView({ chapter, section, prevSection, nextSection }: SectionViewProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const { markCompleted, isCompleted, updateProgress } = useBookStore()
+  const { markCompleted, isCompleted, updateProgress, loadHighlights } = useBookStore()
   const isComplete = isCompleted(chapter.slug, section.slug)
 
   const [showBackToTop, setShowBackToTop] = useState(false)
+
+  useEffect(() => { loadHighlights() }, [loadHighlights])
 
   // Track scroll progress on window scroll
   useEffect(() => {
@@ -114,6 +116,13 @@ export function SectionView({ chapter, section, prevSection, nextSection }: Sect
           <div className="prose prose-invert max-w-none">
             <MDXContent content={section.content} />
           </div>
+
+          <HighlightPopover
+            chapterSlug={chapter.slug}
+            chapterTitle={chapter.title}
+            sectionSlug={section.slug}
+            sectionTitle={section.title}
+          />
 
           {/* Mark complete */}
           <div className="mt-16 pt-8 border-t border-border">
