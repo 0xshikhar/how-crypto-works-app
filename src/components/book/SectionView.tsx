@@ -21,7 +21,7 @@ interface SectionViewProps {
 export function SectionView({ chapter, section, content, prevSection, nextSection }: SectionViewProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  const { markCompleted, isCompleted, updateProgress, loadHighlights, highlights } = useBookStore()
+  const { markCompleted, isCompleted, updateProgress, loadHighlights, highlights, setLastRead } = useBookStore()
   const isComplete = isCompleted(chapter.slug, section.slug)
   const [contentReady, setContentReady] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
@@ -38,6 +38,10 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
     const rafId = window.requestAnimationFrame(() => setContentReady(true))
     return () => window.cancelAnimationFrame(rafId)
   }, [chapter.slug, section.slug, content])
+
+  useEffect(() => {
+    setLastRead(chapter.slug, section.slug)
+  }, [chapter.slug, section.slug, setLastRead])
 
   useEffect(() => {
     if (!contentReady || !contentRef.current) return

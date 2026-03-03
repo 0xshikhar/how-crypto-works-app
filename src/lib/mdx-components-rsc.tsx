@@ -2,6 +2,7 @@ import { Children, isValidElement } from 'react'
 import type { HTMLAttributes, ReactNode } from 'react'
 import type { MDXComponents } from 'mdx/types'
 import { cn } from '@/lib/utils'
+import { InteractiveDiagram } from '@/components/diagrams/InteractiveDiagram'
 
 /* eslint-disable @next/next/no-img-element */
 
@@ -45,6 +46,7 @@ function HeadingWithId({ level, children, id: providedId, ...props }: HeadingWit
 }
 
 export const mdxComponentsRsc: MDXComponents = {
+  InteractiveDiagram,
   h1: ({ children, ...props }) => (
     <h1 className="text-3xl md:text-4xl font-extrabold mt-2 mb-6 leading-tight tracking-tight" {...props}>
       {children}

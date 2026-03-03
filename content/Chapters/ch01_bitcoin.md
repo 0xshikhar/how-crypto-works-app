@@ -84,6 +84,8 @@ For most users, simply use whatever address type your wallet generates by defaul
 
 ### Transaction Structure and Prioritization
 
+<InteractiveDiagram type="merkle-tree" height={420} />
+
 A Bitcoin transaction consists of inputs (the UTXOs being spent) and outputs (the new UTXOs being created). The transaction fee equals the sum of inputs minus the sum of outputs. Once broadcast, transactions enter each node's **mempool**, which is a pool of unconfirmed transactions waiting to be included in a block.
 
 Here's where economics comes into play. Since blocks have limited space, miners must choose which transactions to include from the mempool. They naturally prioritize transactions that maximize their revenue. However, transactions vary in size. A simple payment might be small while a complex transaction consolidating dozens of small inputs or batching payments to many recipients could be much larger. This is why miners look at fee rate (fee per unit of size) rather than absolute fee. A small transaction paying 10 sats might have a higher rate than a large transaction paying 100 sats. Fee rate is measured in satoshis per virtual byte (sats/vB), where a satoshi is the smallest unit of bitcoin (100 million satoshis equal one bitcoin).

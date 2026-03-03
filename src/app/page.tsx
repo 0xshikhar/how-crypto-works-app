@@ -4,8 +4,9 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { BookOpen, ArrowRight, Blocks, Shield, Zap, Globe, Github, Twitter } from 'lucide-react'
 import dynamic from 'next/dynamic'
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { ThemeToggle } from '@/components/ThemeToggle'
+import { useBookStore } from '@/lib/store'
 
 const HeroScene = dynamic(() => import('@/components/three/HeroScene'), { ssr: false })
 
@@ -46,6 +47,15 @@ const itemVariants = {
 }
 
 export default function HomePage() {
+    const { lastRead, loadFromStorage } = useBookStore()
+
+    useEffect(() => {
+        loadFromStorage()
+    }, [loadFromStorage])
+
+    const primaryHref = lastRead ? `/book/${lastRead.chapterSlug}/${lastRead.sectionSlug}` : '/book'
+    const primaryLabel = lastRead ? 'Continue Reading' : 'Start Reading'
+
     return (
         <div className="min-h-screen bg-background">
             {/* Theme toggle */}
@@ -83,19 +93,6 @@ export default function HomePage() {
                         <span className="text-sm text-foreground font-medium tracking-wide">The Missing Manual for Crypto</span>
                     </motion.div>
 
-                    <div className="mb-3 flex items-center justify-center">
-                        <a
-                            href="https://github.com/lawmaster10/howcryptoworksbook"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="inline-flex items-center gap-2 rounded-full border border-border bg-background/70 backdrop-blur-sm px-4 py-1.5 text-[11px] uppercase tracking-[0.25em] text-muted hover:text-foreground transition-colors"
-                            title="Inspired from How Crypto Works Book"
-                        >
-                            <span className="text-accent">Tag</span>
-                            <span>How Crypto Works Book</span>
-                        </a>
-                    </div>
-
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 leading-[1.05] drop-shadow-2xl">
                         <span className="text-foreground">
                             How Crypto
@@ -113,7 +110,7 @@ export default function HomePage() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <Link href="/book">
+                        <Link href={primaryHref}>
                             <motion.button
                                 className="group relative flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-lg transition-all duration-300 shadow-[0_0_30px_rgba(79,70,229,0.4)] hover:shadow-[0_0_40px_rgba(79,70,229,0.6)] overflow-hidden"
                                 whileHover={{ scale: 1.02 }}
@@ -121,7 +118,7 @@ export default function HomePage() {
                             >
                                 <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                                 <BookOpen className="w-5 h-5 relative z-10" />
-                                <span className="relative z-10">Start Reading</span>
+                                <span className="relative z-10">{primaryLabel}</span>
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform relative z-10" />
                             </motion.button>
                         </Link>

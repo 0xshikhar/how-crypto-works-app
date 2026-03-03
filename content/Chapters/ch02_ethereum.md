@@ -12,6 +12,8 @@ Understanding Ethereum means grasping how these pieces fit together: how the fee
 
 ### The Ethereum Virtual Machine
 
+<InteractiveDiagram type="evm-stack" height={420} />
+
 At Ethereum's core lies the Ethereum Virtual Machine (EVM), a computational engine that executes code across thousands of computers (called nodes) simultaneously. Unlike Bitcoin, which primarily transfers value, Ethereum runs smart contracts, transforming the network from a simple payment system into a programmable "world computer."
 
 The EVM operates as a stack-based virtual machine, processing instructions like a stack of plates where you can only add or remove from the top. It uses low-level instructions called opcodes. These include operations like ADD, MULTIPLY, STORE, and CALL. When developers write smart contracts in high-level languages like Solidity or Vyper, compilers translate that code into EVM bytecode (a series of opcodes) that every Ethereum node can execute. This standardization ensures contracts behave identically whether running in New York, Singapore, or Dubai.
@@ -99,6 +101,8 @@ The transformation was unprecedented in scope. Bitcoin miners race to solve comp
 Beyond energy efficiency, The Merge restructured Ethereum's architecture itself: it separated Ethereum's execution layer (which processes transactions) from its consensus layer (which decides on block order and finality). This separation, embodied in the Beacon Chain, created a foundation for future scalability improvements that would have been impossible under the old mining system.
 
 ### How Ethereum Achieves Consensus
+
+<InteractiveDiagram type="proof-of-stake" height={420} />
 
 Ethereum's proof-of-stake system operates like a carefully choreographed dance, with thousands of validators working together in precise intervals to maintain network security.
 
