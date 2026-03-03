@@ -21,7 +21,7 @@ interface SectionViewProps {
 export function SectionView({ chapter, section, content, prevSection, nextSection }: SectionViewProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  const { updateProgress, loadHighlights, highlights } = useBookStore()
+  const { updateProgress, loadHighlights, highlights, setLastRead } = useBookStore()
   const [contentReady, setContentReady] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
 
@@ -62,6 +62,19 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
       }
       setShowBackToTop(scrollTop > 300)
     }
+
+    const checkInitialProgress = () => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      if (docHeight <= 0) {
+        updateProgress(chapter.slug, section.slug, 100)
+      } else if (window.scrollY === 0) {
+        updateProgress(chapter.slug, section.slug, 0)
+      }
+    }
+
+    handleScroll()
+    requestAnimationFrame(checkInitialProgress)
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [chapter.slug, section.slug, updateProgress])
