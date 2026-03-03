@@ -63,10 +63,18 @@ export const useBookStore = create<BookStore>((set, get) => ({
         const key = `${chapterSlug}/${sectionSlug}`
         set(state => {
             const newProgress = { ...state.readingProgress, [key]: percentage }
-            const newLastRead = { chapterSlug, sectionSlug, updatedAt: Date.now() }
+
+            const shouldUpdateLastRead = state.lastRead?.chapterSlug !== chapterSlug || state.lastRead?.sectionSlug !== sectionSlug
+            let newLastRead = state.lastRead
+            if (shouldUpdateLastRead) {
+                newLastRead = { chapterSlug, sectionSlug, updatedAt: Date.now() }
+            }
+
             if (typeof window !== 'undefined') {
                 localStorage.setItem('cryptobook-progress', JSON.stringify(newProgress))
-                localStorage.setItem('cryptobook-last-read', JSON.stringify(newLastRead))
+                if (shouldUpdateLastRead && newLastRead) {
+                    localStorage.setItem('cryptobook-last-read', JSON.stringify(newLastRead))
+                }
             }
 
             // Auto-complete at 90%+
@@ -78,7 +86,11 @@ export const useBookStore = create<BookStore>((set, get) => ({
                 }
             }
 
-            return { readingProgress: newProgress, completedSections: newCompleted, lastRead: newLastRead }
+            return {
+                readingProgress: newProgress,
+                completedSections: newCompleted,
+                ...(shouldUpdateLastRead && newLastRead !== null && { lastRead: newLastRead })
+            }
         })
     },
 
