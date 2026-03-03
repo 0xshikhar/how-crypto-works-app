@@ -1,50 +1,98 @@
-# How Crypto Actually Works
+# How Crypto Actually Works App
 
-<!-- make it tag How Crypto Works Book -->
+An interactive, visual deep-dive into cryptocurrency, blockchain technology, and decentralized finance. This project adapts the open-source book into an immersive web experience with interactive 3D diagrams and book-like navigation.
 
-[![Inspired from How Crypto Works Book](https://img.shields.io/badge/Inspired%20from-How%20Crypto%20Works%20Book-0ea5e9?style=flat&logo=github)](https://github.com/lawmaster10/howcryptoworksbook)
+## Live Demo
 
-An interactive, visual deep-dive into cryptocurrency, blockchain technology, and decentralized finance.
-This project adapts the open-source book into an immersive web experience with 3D diagrams, quizzes, and book-like navigation.
+https://how-crypto-works.vercel.app
 
-- Live preview: https://how-crypto-works.vercel.app
+## Key Features
 
-## Features (v1.0.0)
-
-- 15 in-depth chapters (Bitcoin to quantum resistance and prediction markets)
+- 15 in-depth chapters, from Bitcoin fundamentals to quantum resistance and prediction markets
 - Interactive 3D diagrams (Three.js + React Three Fiber)
-- Book-like navigation (TOC, progress tracking, highlights)
-- Embedded quizzes (MDX-powered components)
-- Fast static builds (Next.js App Router SSG)
+- Book-style navigation: table of contents, progress tracking, highlights, and search
+- Fast builds with the Next.js App Router
 
 ## Tech Stack
 
-- Next.js 14 (App Router)
-- React 18
-- Tailwind CSS (v4) + Framer Motion
-- Three.js + @react-three/fiber + @react-three/drei
-- MDX rendering: `next-mdx-remote` (RSC) + `gray-matter`
-- State: Zustand
+- Next.js 14 (App Router), React 18
+- Tailwind CSS v4, Framer Motion
+- Three.js, @react-three/fiber, @react-three/drei
+- MDX rendering: next-mdx-remote (RSC) + gray-matter
+- Zustand for client state
 - Runtime: Bun
+
+## Project Structure
+
+- src/app: routes and layouts
+- src/components/book: book UI (layout, section view, highlights, search)
+- src/components/diagrams: interactive diagrams
+- src/components/mdx: MDX UI components (callouts, code blocks, info boxes)
+- src/lib/content-loader.ts: parses chapters and sections from markdown
+
+## Content Authoring
+
+Content is bundled in web-app/content/Chapters for deployments. For local authoring or custom content, point to an external chapters directory via CRYPTOBOOK_CONTENT_DIR.
 
 ## Getting Started
 
 ```bash
-cd web-app
+git clone git@github.com:0xshikhar/how-crypto-works-app.git
+cd how-crypto-works-app/web-app
+
 bun install
 bun run dev
 ```
 
-Content is bundled in `web-app/content/Chapters` for deployments. For local authoring, you can also point to an external chapters directory via `CRYPTOBOOK_CONTENT_DIR`.
+## Scripts
 
-## Project Structure
+```bash
+bun run dev
+bun run build
+bun run start
+bun run lint
+```
 
-- `src/app`: routes + layouts
-- `src/components/book`: book UI (layout, section view, highlights)
-- `src/components/diagrams`: 3D diagrams
-- `src/components/mdx`: MDX UI components
-- `src/lib/content-loader.ts`: parses chapters/sections from markdown
+## Contributing
+
+Contributions are welcome, including:
+
+- Content: propose new chapters, sections, or improvements to existing sections
+- Diagrams: add new interactive diagrams or improve existing ones
+- Reader experience: navigation, search, highlights, performance, accessibility
+- Bug fixes: rendering, layout, and cross-device issues
+
+### Proposing Topics and Content Ideas
+
+If you want to add a new topic, open an issue with:
+
+- The chapter/section title you’re proposing
+- The intended audience level (beginner, intermediate, advanced)
+- A short outline (bullets) and any references you want included
+- Any diagram ideas that would make it easier to understand
+
+### Contributing Content (Markdown)
+
+1. Add or update markdown files in web-app/content/Chapters.
+2. Keep sections focused and use headings for structure.
+3. Prefer clear explanations and references over hype or price/speculation.
+
+### Contributing Code
+
+1. Fork the repo and create a feature branch.
+2. Keep changes focused and write clear commit messages.
+3. Run bun run lint before opening a PR.
+4. Open a pull request with a concise summary and screenshots for UI changes.
+
+## Roadmap
+
+- Add optional knowledge checks/quizzes embedded in content
+- Add more diagrams and interactive learning modules
+
+## Author
+
+Created and maintained by 0xShikhar.
 
 ## Credits
 
-- Inspired from [How Crypto Works Book](https://github.com/lawmaster10/howcryptoworksbook)
+- Book/content inspiration: How Crypto Works Book (open-source): https://github.com/lawmaster10/howcryptoworksbook
