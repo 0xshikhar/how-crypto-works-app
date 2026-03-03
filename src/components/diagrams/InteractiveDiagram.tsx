@@ -12,6 +12,16 @@ const diagrams: Record<string, React.ComponentType<{ resetKey?: number }>> = {
   transaction: dynamic(() => import('./TransactionDiagram'), { ssr: false }),
   mining: dynamic(() => import('./MiningDiagram'), { ssr: false }),
   wallet: dynamic(() => import('./WalletDiagram'), { ssr: false }),
+  'merkle-tree': dynamic(() => import('./MerkleTreeDiagram'), { ssr: false }),
+  'elliptic-curve': dynamic(() => import('./EllipticCurveDiagram'), { ssr: false }),
+  'proof-of-stake': dynamic(() => import('./ProofOfStakeDiagram'), { ssr: false }),
+  'amm-curve': dynamic(() => import('./AMMCurveDiagram'), { ssr: false }),
+  'sandwich-attack': dynamic(() => import('./SandwichAttackDiagram'), { ssr: false }),
+  'validator-network': dynamic(() => import('./ValidatorNetworkDiagram'), { ssr: false }),
+  'evm-stack': dynamic(() => import('./EVMStackDiagram'), { ssr: false }),
+  'blockchain-trilemma': dynamic(() => import('./BlockchainTrilemma'), { ssr: false }),
+  'proof-of-history': dynamic(() => import('./ProofOfHistoryDiagram'), { ssr: false }),
+  'lattice-crypto': dynamic(() => import('./LatticeEncryptionDiagram'), { ssr: false }),
 }
 
 const titles: Record<string, string> = {
@@ -20,6 +30,16 @@ const titles: Record<string, string> = {
   transaction: 'Transaction Flow (UTXO)',
   mining: 'Mining Process',
   wallet: 'Wallet & Key Hierarchy',
+  'merkle-tree': 'Merkle Tree Structure',
+  'elliptic-curve': 'Elliptic Curve Cryptography',
+  'proof-of-stake': 'Proof of Stake Consensus',
+  'amm-curve': 'AMM Pricing Curve (x × y = k)',
+  'sandwich-attack': 'MEV Sandwich Attack',
+  'validator-network': 'P2P Network Propagation',
+  'evm-stack': 'EVM Execution Stack',
+  'blockchain-trilemma': 'The Blockchain Trilemma',
+  'proof-of-history': 'Proof of History Timeline',
+  'lattice-crypto': 'Lattice-Based Cryptography',
 }
 
 interface InteractiveDiagramProps {
