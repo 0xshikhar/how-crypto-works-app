@@ -32,6 +32,8 @@ Decentralized exchanges solve a fundamental problem: how can users trade assets 
 
 ### Uniswap: The AMM Revolution
 
+<InteractiveDiagram type="amm-curve" height={420} />
+
 Uniswap pioneered a radically different approach to trading that transformed how we think about market making. Instead of maintaining complex order books that require constant updates and millisecond matching, Uniswap uses an **Automated Market Maker (AMM)** that quotes prices from pool balances and settles trades atomically.
 
 This innovation arose from Ethereum's specific constraints. As discussed in Chapter II, Ethereum has low throughput, variable fees, and roughly twelve-second blocks. A central limit order book requires constant posting and canceling of orders with millisecond matching, making it too transaction-intensive to be feasible and expensive to run fully on-chain. AMMs solve this by replacing the matching engine with a pricing curve that requires only one transaction to update balances and settle immediately.

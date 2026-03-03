@@ -52,6 +52,8 @@ Solana achieves its rapid confirmations through an integrated stack of systems, 
 
 ### The Foundation: Proof of History
 
+<InteractiveDiagram type="proof-of-history" height={420} />
+
 At the base layer sits Proof of History (PoH), Solana's cryptographic timekeeping mechanism. Think of it as a verifiable clock that produces a continuous sequence of hashes, so everyone can agree on the relative order of events before they are added to the blockchain. PoH creates a historical record that proves events occurred in a specific sequence, enabling validators to agree on transaction order without extensive back and forth communication. This ordering system becomes the foundation for everything else.
 
 ### Consensus Built on Time: Tower BFT

@@ -48,6 +48,8 @@ It's like knowing a big storm is coming but not sure if it's next week or next d
 
 ### The Cryptographic Solution
 
+<InteractiveDiagram type="lattice-crypto" height={420} />
+
 Cryptographers have been preparing for this "quantum transition" for over a decade. In 2024, the U.S. government approved the first set of new encryption standards designed to resist quantum computers. Think of it like upgrading from mechanical locks to smart locks throughout an entire city. It's a big project, but manageable with proper planning.
 
 This effort is part of a global, coordinated response led by organizations like the U.S. National Institute of Standards and Technology (NIST). For nearly 10 years, NIST has been running a public competition to vet and select a portfolio of quantum-resistant cryptographic algorithms. The first set of these standards was finalized in 2024, providing a trusted foundation for the industry's transition.

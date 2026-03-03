@@ -10,6 +10,8 @@ This capability comes with corresponding responsibility. Whether for individuals
 
 ### Public Keys, Private Keys, and Digital Signatures
 
+<InteractiveDiagram type="elliptic-curve" height={420} />
+
 At the heart of custody lies a fundamental cryptographic relationship: public keys and private keys. Think of this as a mathematical lock-and-key system where the lock (public key) can be shared freely, but only the corresponding key (private key) can unlock it.
 
 A private key is a large random number, typically 256 bits of entropy, that serves as the holder's secret. In practice, private keys are usually derived from 12 or 24-word mnemonic **seed phrases** rather than generated directly. From this private key, mathematical operations generate a corresponding public key. While it's computationally easy to derive a public key from a private key, the reverse is practically impossible with current technology. (Chapter XIV examines how quantum computers could change this equation.)
