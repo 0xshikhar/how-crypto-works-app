@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { BookOpen, ArrowRight, Blocks, Shield, Zap, Globe, Github, Twitter } from 'lucide-react'
+import { BookOpen, ArrowRight, Blocks, Shield, Search, Globe, Github, Twitter } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import { Suspense, useEffect } from 'react'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -27,9 +27,9 @@ const features = [
         description: 'From Bitcoin basics to quantum resistance and prediction markets',
     },
     {
-        icon: Zap,
-        title: 'Interactive Quizzes',
-        description: 'Test your understanding with embedded quizzes throughout',
+        icon: Search,
+        title: 'Highlights & Search',
+        description: 'Search across chapters, highlight key passages, and track your progress',
     },
 ]
 
@@ -57,14 +57,14 @@ export default function HomePage() {
     const primaryLabel = lastRead ? 'Continue Reading' : 'Start Reading'
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-[100svh] bg-background">
             {/* Theme toggle */}
             <div className="fixed top-4 right-4 z-50">
                 <ThemeToggle className="bg-surface/50 backdrop-blur-sm border border-border" />
             </div>
 
             {/* Hero Section */}
-            <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+            <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden">
                 {/* 3D Background */}
                 <div className="absolute inset-0 z-0">
                     <Suspense fallback={null}>
@@ -98,14 +98,14 @@ export default function HomePage() {
                             How Crypto
                         </span>
                         <br />
-                        <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 bg-clip-text text-transparent filter drop-shadow-[0_0_30px_rgba(129,140,248,0.4)]">
+                        <span className="bg-gradient-to-r from-blue-300 via-indigo-300 to-purple-300 md:from-blue-400 md:via-indigo-400 md:to-purple-400 bg-clip-text text-transparent md:filter md:drop-shadow-[0_0_30px_rgba(129,140,248,0.4)]">
                             Actually Works
                         </span>
                     </h1>
 
                     <p className="text-lg md:text-xl text-muted max-w-2xl mx-auto mb-10 leading-relaxed font-light">
                         An interactive deep-dive into cryptocurrency, blockchain technology,
-                        and decentralized finance — with <strong className="text-foreground font-semibold">3D visualizations</strong>, quizzes, and
+                        and decentralized finance — with <strong className="text-foreground font-semibold">interactive 3D diagrams</strong>, quizzes, and
                         book-like navigation.
                     </p>
 
@@ -170,7 +170,7 @@ export default function HomePage() {
                         className="text-4xl md:text-5xl font-extrabold text-center mb-4 tracking-tight text-foreground"
                     >
                         Learn Crypto the{' '}
-                        <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent filter drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">Right Way</span>
+                        <span className="bg-gradient-to-r from-blue-300 to-purple-300 md:from-blue-400 md:to-purple-400 bg-clip-text text-transparent md:filter md:drop-shadow-[0_0_15px_rgba(59,130,246,0.3)]">Right Way</span>
                     </motion.h2>
                     <motion.p
                         variants={itemVariants}

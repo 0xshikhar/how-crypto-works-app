@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Clock, ArrowUp } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ChevronRight, Clock, ArrowUp } from 'lucide-react'
 import { useBookStore } from '@/lib/store'
 import type { Highlight } from '@/lib/store'
 import { HighlightPopover } from '@/components/book/HighlightPopover'
@@ -21,8 +21,7 @@ interface SectionViewProps {
 export function SectionView({ chapter, section, content, prevSection, nextSection }: SectionViewProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
-  const { markCompleted, isCompleted, updateProgress, loadHighlights, highlights, setLastRead } = useBookStore()
-  const isComplete = isCompleted(chapter.slug, section.slug)
+  const { updateProgress, loadHighlights, highlights, setLastRead } = useBookStore()
   const [contentReady, setContentReady] = useState(false)
   const [showBackToTop, setShowBackToTop] = useState(false)
 
@@ -63,6 +62,19 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
       }
       setShowBackToTop(scrollTop > 300)
     }
+
+    const checkInitialProgress = () => {
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight
+      if (docHeight <= 0) {
+        updateProgress(chapter.slug, section.slug, 100)
+      } else if (window.scrollY === 0) {
+        updateProgress(chapter.slug, section.slug, 0)
+      }
+    }
+
+    handleScroll()
+    requestAnimationFrame(checkInitialProgress)
+
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [chapter.slug, section.slug, updateProgress])
@@ -118,20 +130,7 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
             contentRootRef={contentRef}
           />
 
-          <div className="mt-16 pt-8 border-t border-border">
-            <button
-              onClick={() => markCompleted(chapter.slug, section.slug)}
-              className={`inline-flex items-center gap-2.5 px-6 py-3 rounded-xl font-medium text-sm transition-all duration-300 ${isComplete
-                ? 'bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 cursor-default'
-                : 'bg-surface border border-border hover:border-accent/40 hover:bg-surface-light'
-                }`}
-            >
-              <Check className={`w-4 h-4 ${isComplete ? 'text-[#22c55e]' : 'text-muted'}`} />
-              {isComplete ? 'Section Completed ✓' : 'Mark as Complete'}
-            </button>
-          </div>
-
-          <div className="mt-10 flex items-center justify-between gap-4">
+          <div className=" mt-16 pt-8 border-t border-border flex items-center justify-between gap-4">
             {prevSection ? (
               <Link
                 href={`/book/${prevSection.chapter.slug}/${prevSection.section.slug}`}
