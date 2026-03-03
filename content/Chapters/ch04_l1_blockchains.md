@@ -24,6 +24,8 @@ With these market realities established, let's examine the technical architectur
 
 ### The Four Planes
 
+<InteractiveDiagram type="validator-network" height={420} />
+
 Every L1 is fundamentally a bundle of four core functions. Think of a blockchain as a restaurant that needs to handle these essential operations:
 
 **Execution** is the kitchen where orders (transactions) get processed and meals (state changes) get prepared. **Settlement** is the dining room where completed meals get delivered and customers pay their bills (finalized state). Consensus is the management system, ensuring everyone agrees on which orders came first and which tables they belong to. **Data availability** is the record-keeping, maintaining receipts and records so anyone can verify what happened.
@@ -83,6 +85,8 @@ Proof-of-Stake (PoS) systems like Ethereum (detailed in Chapter II) use economic
 The key difference shapes how each system handles finality, performance, and economic security. PoW externalizes costs through energy consumption, creating ongoing operational expenses that make sustained attacks expensive. PoS internalizes costs through staked capital, enabling different finality guarantees and lower ongoing resource consumption. We'll examine how these consensus mechanisms translate into different finality models after understanding the fundamental trade-offs they navigate.
 
 ### Liveness vs Safety
+
+<InteractiveDiagram type="blockchain-trilemma" height={420} />
 
 A deeper lens on these consensus families is the liveness versus safety trade-off. Blockchains face a core tension: should they keep producing blocks no matter what (liveness), or should they refuse to produce any blocks if there's a risk of creating conflicting information (safety)? The CAP theorem from distributed systems theory captures a similar tension, and it applies loosely to blockchains facing network disruptions.
 

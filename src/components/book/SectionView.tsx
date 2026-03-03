@@ -39,6 +39,10 @@ export function SectionView({ chapter, section, content, prevSection, nextSectio
   }, [chapter.slug, section.slug, content])
 
   useEffect(() => {
+    setLastRead(chapter.slug, section.slug)
+  }, [chapter.slug, section.slug, setLastRead])
+
+  useEffect(() => {
     if (!contentReady || !contentRef.current) return
     const rafId = window.requestAnimationFrame(() => {
       if (contentRef.current) {

@@ -8,6 +8,23 @@ interface ReadingProgress {
 
 type Theme = 'light' | 'dark'
 
+interface LastRead {
+    chapterSlug: string
+    sectionSlug: string
+    updatedAt: number
+}
+
+function isLastRead(value: unknown): value is LastRead {
+    if (!value || typeof value !== 'object') return false
+    const obj = value as Record<string, unknown>
+    return (
+        typeof obj.chapterSlug === 'string' &&
+        typeof obj.sectionSlug === 'string' &&
+        typeof obj.updatedAt === 'number' &&
+        Number.isFinite(obj.updatedAt)
+    )
+}
+
 export interface Highlight {
     id: string
     text: string
@@ -28,6 +45,8 @@ interface BookStore {
     readingProgress: ReadingProgress
     completedSections: string[]
     updateProgress: (chapterSlug: string, sectionSlug: string, percentage: number) => void
+    setLastRead: (chapterSlug: string, sectionSlug: string) => void
+    lastRead: LastRead | null
     markCompleted: (chapterSlug: string, sectionSlug: string) => void
     getProgress: (chapterSlug: string, sectionSlug: string) => number
     isCompleted: (chapterSlug: string, sectionSlug: string) => boolean
@@ -49,13 +68,24 @@ export const useBookStore = create<BookStore>((set, get) => ({
 
     readingProgress: {},
     completedSections: [],
+    lastRead: null,
 
     updateProgress: (chapterSlug, sectionSlug, percentage) => {
         const key = `${chapterSlug}/${sectionSlug}`
         set(state => {
             const newProgress = { ...state.readingProgress, [key]: percentage }
+
+            const shouldUpdateLastRead = state.lastRead?.chapterSlug !== chapterSlug || state.lastRead?.sectionSlug !== sectionSlug
+            let newLastRead = state.lastRead
+            if (shouldUpdateLastRead) {
+                newLastRead = { chapterSlug, sectionSlug, updatedAt: Date.now() }
+            }
+
             if (typeof window !== 'undefined') {
                 localStorage.setItem('cryptobook-progress', JSON.stringify(newProgress))
+                if (shouldUpdateLastRead && newLastRead) {
+                    localStorage.setItem('cryptobook-last-read', JSON.stringify(newLastRead))
+                }
             }
 
             // Auto-complete at 90%+
@@ -67,7 +97,21 @@ export const useBookStore = create<BookStore>((set, get) => ({
                 }
             }
 
-            return { readingProgress: newProgress, completedSections: newCompleted }
+            return {
+                readingProgress: newProgress,
+                completedSections: newCompleted,
+                ...(shouldUpdateLastRead && newLastRead !== null && { lastRead: newLastRead })
+            }
+        })
+    },
+
+    setLastRead: (chapterSlug, sectionSlug) => {
+        const newLastRead = { chapterSlug, sectionSlug, updatedAt: Date.now() }
+        set(() => {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('cryptobook-last-read', JSON.stringify(newLastRead))
+            }
+            return { lastRead: newLastRead }
         })
     },
 
@@ -100,9 +144,20 @@ export const useBookStore = create<BookStore>((set, get) => ({
         try {
             const progress = localStorage.getItem('cryptobook-progress')
             const completed = localStorage.getItem('cryptobook-completed')
+            const lastRead = localStorage.getItem('cryptobook-last-read')
+            let safeLastRead: LastRead | null = null
+            if (lastRead) {
+                try {
+                    const parsedLastRead: unknown = JSON.parse(lastRead)
+                    safeLastRead = isLastRead(parsedLastRead) ? parsedLastRead : null
+                } catch {
+                    safeLastRead = null
+                }
+            }
             set({
                 readingProgress: progress ? JSON.parse(progress) : {},
                 completedSections: completed ? JSON.parse(completed) : [],
+                lastRead: safeLastRead,
             })
         } catch {
             // Ignore parse errors

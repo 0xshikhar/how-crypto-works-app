@@ -20,7 +20,12 @@ const itemVariants = {
 }
 
 export function BookOverview({ chapters }: { chapters: Chapter[] }) {
-    const { completedSections } = useBookStore()
+    const { completedSections, lastRead, getProgress } = useBookStore()
+    const lastReadChapter = lastRead ? chapters.find(chapter => chapter.slug === lastRead.chapterSlug) : null
+    const lastReadSection = lastReadChapter?.sections.find(section => section.slug === lastRead?.sectionSlug)
+    const lastReadProgress = lastRead && lastReadChapter && lastReadSection
+        ? Math.round(getProgress(lastRead.chapterSlug, lastRead.sectionSlug))
+        : null
 
     return (
         <div className="max-w-4xl mx-auto px-6 py-12">
@@ -41,6 +46,41 @@ export function BookOverview({ chapters }: { chapters: Chapter[] }) {
                     everything from Bitcoin fundamentals to quantum resistance.
                 </p>
             </motion.div>
+
+            {lastReadChapter && lastReadSection && (
+                <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.05 }}
+                    className="mb-10"
+                >
+                    <Link
+                        href={`/book/${lastReadChapter.slug}/${lastReadSection.slug}`}
+                        className="group flex items-center gap-4 p-5 rounded-2xl border border-accent/30 bg-gradient-to-r from-accent/10 via-surface/40 to-surface hover:border-accent/50 transition-all"
+                    >
+                        <div className="w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
+                            <BookOpen className="w-5 h-5 text-accent" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="text-xs uppercase tracking-[0.2em] text-muted-dark mb-1">Continue Reading</div>
+                            <div className="text-sm text-muted-dark truncate">{lastReadChapter.title}</div>
+                            <div className="text-base font-semibold text-foreground truncate">{lastReadSection.title}</div>
+                        </div>
+                        {typeof lastReadProgress === 'number' && (
+                            <div className="hidden sm:flex items-center gap-2 text-xs text-muted">
+                                <span>{lastReadProgress}% read</span>
+                                <div className="w-20 h-1.5 bg-surface-light rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-accent rounded-full transition-all"
+                                        style={{ width: `${lastReadProgress}%` }}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        <ArrowRight className="w-4 h-4 text-muted-dark group-hover:text-accent group-hover:translate-x-1 transition-all shrink-0" />
+                    </Link>
+                </motion.div>
+            )}
 
             <motion.div
                 className="space-y-3"

@@ -36,6 +36,8 @@ The key distinction isn't whether value gets extracted (it always does), but whe
 
 ### MEV Extraction Strategies
 
+<InteractiveDiagram type="sandwich-attack" height={420} />
+
 From this chaos emerged a hierarchy of exploitation strategies, each more sophisticated than the last. Arbitrage, as described above, sits at the benevolent end. But when competition heats up, searchers get more aggressive.
 
 They start **front-running**, which means copying a trader's transaction but paying extra to go first. For example, when a trader spots an arbitrage opportunity where they can buy ETH for $3,000 on one DEX and immediately sell it for $3,050 on another, a bot sees the pending transaction and submits the exact same trade with a higher fee to jump ahead in line, capturing that $50 profit before the original trader can.
