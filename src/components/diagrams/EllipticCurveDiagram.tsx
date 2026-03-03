@@ -104,8 +104,7 @@ function AdditionVisualization({ showLine }: { showLine: boolean }) {
 
   // Find intersection: substitute into y² = x³ + 7
   // (mx + b)² = x³ + 7
-  // This is cubic; for visualization, use a numerical approach
-  const rX = 1.8 // approximated intersection
+  const rX = m * m - pX - qX // third intersection x on y^2 = x^3 + 7
   const rY = m * rX + b
   const reflectedY = -rY // P + Q = reflected point
 
