@@ -58,10 +58,10 @@ function ValidatorNode({
   const color = validator.isSlashed
     ? '#ef4444'
     : validator.isProposer
-    ? '#f59e0b'
-    : hasAttested
-    ? '#10b981'
-    : '#3b82f6'
+      ? '#f59e0b'
+      : hasAttested
+        ? '#10b981'
+        : '#3b82f6'
 
   return (
     <group position={[x, 0, z]}>
