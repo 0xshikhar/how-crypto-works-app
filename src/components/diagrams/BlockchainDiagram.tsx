@@ -1,9 +1,11 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, extend } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import * as THREE from 'three'
+
+extend({ ThreeLine: THREE.Line })
 
 const BLOCK_DATA = [
   { id: '000a3f...', tx: '3 txns', hash: 'acdf12...', color: '#3b82f6' },
