@@ -230,7 +230,7 @@ function Scene() {
   useFrame((state) => {
     const cycleTime = 12
     const t = state.clock.elapsedTime % cycleTime
-    // Attestations arrive over the first 8 seconds
+    // Attestations arrive over the first 7.2 seconds
     const progress = Math.min(t / (ATTESTATION_SPEED * 12), 1) * 12
     const step = Math.floor(progress)
     if (step !== attestationStepRef.current) {

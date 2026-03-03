@@ -32,7 +32,7 @@ function generateCurvePoints(): { upper: THREE.Vector3[]; lower: THREE.Vector3[]
 // Point on curve: given x, returns y (positive)
 function curveY(x: number): number {
   const val = x * x * x + 7
-  return val >= 0 ? Math.sqrt(val) : 0
+  return val >= 0 ? Math.sqrt(val) : Number.NaN
 }
 
 function CurveLine({ points, color, opacity = 0.8 }: { points: THREE.Vector3[]; color: string; opacity?: number }) {
@@ -97,36 +97,37 @@ function AdditionVisualization({ showLine }: { showLine: boolean }) {
   const pY = curveY(pX)
   const qX = 0.5
   const qY = curveY(qX)
+  const isValid = Number.isFinite(pY) && Number.isFinite(qY)
 
   // Line through P and Q: y = mx + b
-  const m = (qY - pY) / (qX - pX)
-  const b = pY - m * pX
+  const m = isValid ? (qY - pY) / (qX - pX) : 0
+  const b = isValid ? pY - m * pX : 0
 
   // Find intersection: substitute into y² = x³ + 7
   // (mx + b)² = x³ + 7
-  const rX = m * m - pX - qX // third intersection x on y^2 = x^3 + 7
-  const rY = m * rX + b
+  const rX = isValid ? m * m - pX - qX : 0 // third intersection x on y^2 = x^3 + 7
+  const rY = isValid ? m * rX + b : 0
   const reflectedY = -rY // P + Q = reflected point
 
   const lineGeo = useMemo(() => {
-    if (!showLine) return null
+    if (!showLine || !isValid) return null
     const points = [
       new THREE.Vector3(pX - 1, pY - m, 0),
       new THREE.Vector3(rX + 0.5, m * (rX + 0.5) + b, 0),
     ]
     return new THREE.BufferGeometry().setFromPoints(points)
-  }, [showLine, pX, pY, m, b, rX])
+  }, [showLine, isValid, pX, pY, m, b, rX])
 
   const reflectGeo = useMemo(() => {
-    if (!showLine) return null
+    if (!showLine || !isValid) return null
     const points = [
       new THREE.Vector3(rX, rY, 0),
       new THREE.Vector3(rX, reflectedY, 0),
     ]
     return new THREE.BufferGeometry().setFromPoints(points)
-  }, [showLine, rX, rY, reflectedY])
+  }, [showLine, isValid, rX, rY, reflectedY])
 
-  if (!showLine) return null
+  if (!showLine || !isValid) return null
 
   return (
     <>
@@ -166,7 +167,9 @@ function MultiplicationTrail() {
     for (let i = 0; i < xValues.length; i++) {
       const x = xValues[i]
       const y = -curveY(x) // lower half of curve for trail
-      points.push({ x, y, label: `${i + 1}G` })
+      if (Number.isFinite(y)) {
+        points.push({ x, y, label: `${i + 1}G` })
+      }
     }
     return points
   }, [])
@@ -254,6 +257,10 @@ function Scene() {
   const pY = curveY(pX)
   const qX = 0.5
   const qY = curveY(qX)
+  const gY = curveY(-1.7)
+  const isPValid = Number.isFinite(pY)
+  const isQValid = Number.isFinite(qY)
+  const isGValid = Number.isFinite(gY)
 
   return (
     <>
@@ -269,32 +276,38 @@ function Scene() {
       <CurveLine points={lower} color="#3b82f6" />
 
       {/* Points P and Q */}
-      <CurvePoint
-        position={[pX, pY, 0]}
-        color="#f59e0b"
-        label="P"
-        isHovered={hovered === 'P'}
-        onHover={setHovered}
-        id="P"
-      />
-      <CurvePoint
-        position={[qX, qY, 0]}
-        color="#f59e0b"
-        label="Q"
-        isHovered={hovered === 'Q'}
-        onHover={setHovered}
-        id="Q"
-      />
+      {isPValid && (
+        <CurvePoint
+          position={[pX, pY, 0]}
+          color="#f59e0b"
+          label="P"
+          isHovered={hovered === 'P'}
+          onHover={setHovered}
+          id="P"
+        />
+      )}
+      {isQValid && (
+        <CurvePoint
+          position={[qX, qY, 0]}
+          color="#f59e0b"
+          label="Q"
+          isHovered={hovered === 'Q'}
+          onHover={setHovered}
+          id="Q"
+        />
+      )}
 
       {/* Generator point G */}
-      <CurvePoint
-        position={[-1.7, -curveY(-1.7), 0]}
-        color="#8b5cf6"
-        label="G (Generator)"
-        isHovered={hovered === 'G'}
-        onHover={setHovered}
-        id="G"
-      />
+      {isGValid && (
+        <CurvePoint
+          position={[-1.7, -gY, 0]}
+          color="#8b5cf6"
+          label="G (Generator)"
+          isHovered={hovered === 'G'}
+          onHover={setHovered}
+          id="G"
+        />
+      )}
 
       <AdditionVisualization showLine={showAdditionLine} />
       <MultiplicationTrail />

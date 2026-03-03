@@ -14,6 +14,17 @@ interface LastRead {
     updatedAt: number
 }
 
+function isLastRead(value: unknown): value is LastRead {
+    if (!value || typeof value !== 'object') return false
+    const obj = value as Record<string, unknown>
+    return (
+        typeof obj.chapterSlug === 'string' &&
+        typeof obj.sectionSlug === 'string' &&
+        typeof obj.updatedAt === 'number' &&
+        Number.isFinite(obj.updatedAt)
+    )
+}
+
 export interface Highlight {
     id: string
     text: string
@@ -134,10 +145,19 @@ export const useBookStore = create<BookStore>((set, get) => ({
             const progress = localStorage.getItem('cryptobook-progress')
             const completed = localStorage.getItem('cryptobook-completed')
             const lastRead = localStorage.getItem('cryptobook-last-read')
+            let safeLastRead: LastRead | null = null
+            if (lastRead) {
+                try {
+                    const parsedLastRead: unknown = JSON.parse(lastRead)
+                    safeLastRead = isLastRead(parsedLastRead) ? parsedLastRead : null
+                } catch {
+                    safeLastRead = null
+                }
+            }
             set({
                 readingProgress: progress ? JSON.parse(progress) : {},
                 completedSections: completed ? JSON.parse(completed) : [],
-                lastRead: lastRead ? JSON.parse(lastRead) : null,
+                lastRead: safeLastRead,
             })
         } catch {
             // Ignore parse errors

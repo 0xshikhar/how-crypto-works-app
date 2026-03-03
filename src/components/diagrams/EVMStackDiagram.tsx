@@ -1,11 +1,12 @@
 'use client'
 
-import { useRef, useState, useMemo } from 'react'
+import { useRef, useState, useMemo, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Text } from '@react-three/drei'
 import * as THREE from 'three'
 
 interface StackItem {
+  id: string
   value: string
   color: string
   label: string
@@ -26,38 +27,38 @@ const STEPS: ExecutionStep[] = [
   {
     opcode: 'PUSH1 0x03',
     description: 'Push 3 onto stack',
-    stack: [{ value: '0x03', color: '#3b82f6', label: '3' }],
+    stack: [{ id: 'push-3', value: '0x03', color: '#3b82f6', label: '3' }],
   },
   {
     opcode: 'PUSH1 0x05',
     description: 'Push 5 onto stack',
     stack: [
-      { value: '0x03', color: '#3b82f6', label: '3' },
-      { value: '0x05', color: '#60a5fa', label: '5' },
+      { id: 'push-3', value: '0x03', color: '#3b82f6', label: '3' },
+      { id: 'push-5', value: '0x05', color: '#60a5fa', label: '5' },
     ],
   },
   {
     opcode: 'ADD',
     description: 'Pop 3 and 5, push 8',
-    stack: [{ value: '0x08', color: '#10b981', label: '8 (result)' }],
+    stack: [{ id: 'add-8', value: '0x08', color: '#10b981', label: '8 (result)' }],
   },
   {
     opcode: 'PUSH1 0x02',
     description: 'Push 2 onto stack',
     stack: [
-      { value: '0x08', color: '#10b981', label: '8' },
-      { value: '0x02', color: '#3b82f6', label: '2' },
+      { id: 'add-8', value: '0x08', color: '#10b981', label: '8' },
+      { id: 'push-2', value: '0x02', color: '#3b82f6', label: '2' },
     ],
   },
   {
     opcode: 'MUL',
     description: 'Pop 8 and 2, push 16',
-    stack: [{ value: '0x10', color: '#f59e0b', label: '16 (result)' }],
+    stack: [{ id: 'mul-16', value: '0x10', color: '#f59e0b', label: '16 (result)' }],
   },
   {
     opcode: 'STOP',
     description: 'Execution halted',
-    stack: [{ value: '0x10', color: '#f59e0b', label: '16 (final)' }],
+    stack: [{ id: 'mul-16', value: '0x10', color: '#f59e0b', label: '16 (final)' }],
   },
 ]
 
@@ -74,7 +75,14 @@ function StackPlate({
   isNew: boolean
 }) {
   const groupRef = useRef<THREE.Group>(null)
-  const currentY = useRef(targetY + 3) // start above for slide-in effect
+  const currentY = useRef(isNew ? targetY + 3 : targetY)
+
+  useEffect(() => {
+    currentY.current = isNew ? targetY + 3 : targetY
+    if (groupRef.current) {
+      groupRef.current.position.y = currentY.current
+    }
+  }, [isNew, targetY])
 
   useFrame((_, delta) => {
     if (!groupRef.current) return
@@ -195,6 +203,7 @@ function Scene() {
   })
 
   const currentStep = STEPS[stepIndex]
+  const prevStep = STEPS[prevStepIndex]
 
   return (
     <>
@@ -207,14 +216,17 @@ function Scene() {
       <StackBase />
 
       {/* Stack items */}
-      {currentStep.stack.map((item, i) => (
+      {currentStep.stack.map((item, i) => {
+        const isNew = !prevStep.stack.some(prevItem => prevItem.id === item.id)
+        return (
         <StackPlate
-          key={`${stepIndex}-${i}`}
+          key={item.id}
           item={item}
           targetY={-1.8 + i * 0.55}
-          isNew={i === currentStep.stack.length - 1 && stepIndex !== prevStepIndex}
+          isNew={isNew}
         />
-      ))}
+        )
+      })}
 
       {/* Opcode display */}
       <group position={[-3.5, 2, 0]}>
