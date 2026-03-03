@@ -73,19 +73,19 @@ function StackPlate({
   targetY: number
   isNew: boolean
 }) {
-  const meshRef = useRef<THREE.Mesh>(null)
+  const groupRef = useRef<THREE.Group>(null)
   const currentY = useRef(targetY + 3) // start above for slide-in effect
 
   useFrame((_, delta) => {
-    if (!meshRef.current) return
+    if (!groupRef.current) return
     // Spring towards target Y
     currentY.current += (targetY - currentY.current) * 6 * delta
-    meshRef.current.position.y = currentY.current
+    groupRef.current.position.y = currentY.current
   })
 
   return (
-    <group>
-      <mesh ref={meshRef} position={[0, targetY + 3, 0]}>
+    <group ref={groupRef} position={[0, targetY + 3, 0]}>
+      <mesh>
         <cylinderGeometry args={[0.9, 0.9, 0.35, 24]} />
         <meshStandardMaterial
           color={item.color}
@@ -98,7 +98,7 @@ function StackPlate({
         />
       </mesh>
       <Text
-        position={[0, targetY, 0.95]}
+        position={[0, 0, 0.95]}
         fontSize={0.16}
         color="#f1f5f9"
         anchorX="center"
@@ -106,7 +106,7 @@ function StackPlate({
         {item.value}
       </Text>
       <Text
-        position={[1.3, targetY, 0]}
+        position={[1.3, 0, 0]}
         fontSize={0.12}
         color="#94a3b8"
         anchorX="left"
