@@ -98,11 +98,11 @@ function TransactionBox({
   onHover: (id: string | null) => void
   id: string
 }) {
-  const meshRef = useRef<THREE.Mesh>(null)
+  const groupRef = useRef<THREE.Group>(null)
   const isHovered = hovered === id
 
   useFrame((state) => {
-    if (!meshRef.current) return
+    if (!groupRef.current) return
     const { phase, progress } = getPhase(state.clock.elapsedTime)
 
     let opacity = 0
@@ -119,10 +119,14 @@ function TransactionBox({
       opacity = 1 - progress
     }
 
-    const mat = meshRef.current.material as THREE.MeshStandardMaterial
-    mat.opacity = opacity
-    mat.emissiveIntensity = isHovered ? 0.3 : 0
-    meshRef.current.position.set(
+    const mesh = groupRef.current.children[0] as THREE.Mesh
+    if (mesh && mesh.material) {
+      const mat = mesh.material as THREE.MeshStandardMaterial
+      mat.opacity = opacity
+      mat.emissiveIntensity = isHovered ? 0.3 : 0
+    }
+
+    groupRef.current.position.set(
       basePosition[0],
       basePosition[1] + yOffset,
       basePosition[2]
@@ -130,10 +134,8 @@ function TransactionBox({
   })
 
   return (
-    <group>
+    <group ref={groupRef} position={basePosition}>
       <mesh
-        ref={meshRef}
-        position={basePosition}
         onPointerEnter={() => onHover(id)}
         onPointerLeave={() => onHover(null)}
       >
@@ -149,7 +151,7 @@ function TransactionBox({
         />
       </mesh>
       <Text
-        position={[basePosition[0], basePosition[1] + 0, basePosition[2] + 0.32]}
+        position={[0, 0, 0.32]}
         fontSize={0.13}
         color="#f1f5f9"
         anchorX="center"
@@ -158,7 +160,7 @@ function TransactionBox({
       </Text>
       {isHovered && (
         <Text
-          position={[basePosition[0], basePosition[1] - 0.6, basePosition[2]]}
+          position={[0, -0.6, 0]}
           fontSize={0.1}
           color="#94a3b8"
           anchorX="center"
