@@ -225,13 +225,18 @@ function Particles() {
 function Scene() {
   const [hovered, setHovered] = useState<number | null>(null)
   const [attestationProgress, setAttestationProgress] = useState(0)
+  const attestationStepRef = useRef(0)
 
   useFrame((state) => {
     const cycleTime = 12
     const t = state.clock.elapsedTime % cycleTime
     // Attestations arrive over the first 8 seconds
     const progress = Math.min(t / (ATTESTATION_SPEED * 12), 1) * 12
-    setAttestationProgress(progress)
+    const step = Math.floor(progress)
+    if (step !== attestationStepRef.current) {
+      attestationStepRef.current = step
+      setAttestationProgress(step)
+    }
   })
 
   return (
