@@ -25,7 +25,7 @@ export interface Chapter {
 }
 
 const CONTENT_DIR_CANDIDATES = [
-    process.env.CRYPTOBOOK_CONTENT_DIR,
+    process.env.BOOK_CONTENT_DIR,
     path.join(process.cwd(), 'content', 'Chapters'),
     path.join(process.cwd(), 'web-app', 'content', 'Chapters'),
     path.join(process.cwd(), 'howcryptoworksbook', 'Chapters'),

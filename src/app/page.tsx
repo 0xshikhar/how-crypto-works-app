@@ -11,11 +11,7 @@ import { useBookStore } from '@/lib/store'
 const HeroScene = dynamic(() => import('@/components/three/HeroScene'), { ssr: false })
 
 const features = [
-    {
-        icon: Blocks,
-        title: 'Interactive 3D Diagrams',
-        description: 'Explore blockchain concepts with rotatable, zoomable 3D visualizations',
-    },
+
     {
         icon: BookOpen,
         title: 'Book-Like Navigation',
@@ -25,6 +21,11 @@ const features = [
         icon: Shield,
         title: '15 In-Depth Chapters',
         description: 'From Bitcoin basics to quantum resistance and prediction markets',
+    },
+    {
+        icon: Blocks,
+        title: 'Interactive 3D Diagrams',
+        description: 'Explore blockchain concepts with rotatable, zoomable 3D visualizations',
     },
     {
         icon: Search,
